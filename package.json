@@ -1,0 +1,12 @@
+{
+  "name": "RNAirLite",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "peerDependencies": {
+    "react": "^15.0.2",
+    "react-native": "^0.26.1"
+  },
+  "files": [],
+  "keywords": []
+}
