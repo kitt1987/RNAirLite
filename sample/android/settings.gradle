@@ -1,0 +1,6 @@
+rootProject.name = 'sample'
+
+include ':app'
+
+include ':RNAirLite'
+project(':RNAirLite').projectDir = new File(rootProject.projectDir, '../node_modules/RNAirLite/android')

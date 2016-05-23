@@ -1,0 +1,13 @@
+{
+  "name": "sample",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "RNAirLite": "file:///Users/KH/Documents/js/RNAirLite/component",
+    "react": "^15.0.2",
+    "react-native": "^0.26.1"
+  }
+}

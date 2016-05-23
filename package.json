@@ -7,6 +7,13 @@
     "react": "^15.0.2",
     "react-native": "^0.26.1"
   },
-  "files": [],
+  "files": [
+    "README.md",
+    "index.ios.js",
+    "index.android.js",
+    "ios/",
+    "android/src/",
+    "android/build.gradle"
+  ],
   "keywords": []
 }
