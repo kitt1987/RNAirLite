@@ -1,51 +1,41 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
+'use strict';
 
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+var {
+  NativeModules,
+  DeviceEventEmitter
+} = require('react-native');
 
-class RNAirLite extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
-    );
-  }
+var AirLite = NativeModules.RNAirLite;
+
+function allEvents() {
+  return [
+    AirLite.EventUpdate,
+    AirLite.EventError,
+    AirLite.EventUpdated
+  ];
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+function checkUpdate(url) {
+  AirLite.checkUpdate(url);
+}
 
-AppRegistry.registerComponent('RNAirLite', () => RNAirLite);
+function update(url) {
+  AirLite.update(url);
+}
+
+function rollbackOnError(enable) {
+  AirLite.rollbackOnError();
+}
+
+function addEventListener(event, listener) {
+  if (allEvents().indexOf(event) < 0) return;
+  return DeviceEventEmitter.addListener(event, eventHandle.bind(null, event,
+    listener));
+}
+
+module.exports = {
+  checkUpdate,
+  update,
+  rollbackOnError,
+  addEventListener
+};

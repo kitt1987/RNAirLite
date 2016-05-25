@@ -14,9 +14,8 @@ public class RNAirLiteBundleManager {
     private final String TAG = "#RNAirLiteBundle#";
     private final String StablePatch = "stable_patch";
     private final String StableBundle = "stable_bundle";
-    private final String CurrentPatch = "cur_patch";
     private final String CurrentBundle = "cur_bundle";
-    private final String NewtPatch = "new_patch";
+    private final String NewPatch = "new_patch";
     private final String NewBundle = "new_bundle";
     private final String AirLiteDirectory = "com.kh.rnairlite";
 
@@ -40,8 +39,8 @@ public class RNAirLiteBundleManager {
         return getBundleOrPatch(CurrentBundle);
     }
 
-    public @Nullable File getCurrentPatch() {
-        return getBundleOrPatch(CurrentPatch);
+    public @Nullable File getStablePatch() {
+        return getBundleOrPatch(StablePatch);
     }
 
     public @Nullable File getNewBundle() {
@@ -49,7 +48,23 @@ public class RNAirLiteBundleManager {
     }
 
     public @Nullable File getNewPatch() {
-        return getBundleOrPatch(NewtPatch);
+        return getBundleOrPatch(NewPatch);
+    }
+
+    public void saveNewPatch() {
+        File stablePatch = getBundleOrPatch(StablePatch);
+        if (stablePatch.exists()) stablePatch.delete();
+        File newPatch = getBundleOrPatch(NewPatch);
+        newPatch.renameTo(stablePatch);
+    }
+
+    public void saveNewBundle() {
+        File stableBundle = getBundleOrPatch(StableBundle);
+        if (stableBundle.exists()) stableBundle.delete();
+        File curBundle = getBundleOrPatch(CurrentBundle);
+        if (curBundle.exists()) curBundle.renameTo(stableBundle);
+        File newBundle = getBundleOrPatch(NewBundle);
+        newBundle.renameTo(curBundle);
     }
 
     private @Nullable File getBundleOrPatch(String name) {

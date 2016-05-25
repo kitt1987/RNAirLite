@@ -47,7 +47,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     private final String EventUpdate = "update";
     private final String EventProgress = "progress";
     private final String EventError = "error";
-    private final String EventUpdated = "updated";
+//    private final String EventUpdated = "updated";
 
     private final int HeaderSize = 64;
     private final int PackVersoinSize = 1;
@@ -69,18 +69,19 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         worker.execute(new Runnable() {
             @Override
             public void run() {
-                self.loadLocalPatchVersionTaskInBackground(bundleManager.getCurrentPatch());
+                self.loadLocalPatchVersionTaskInBackground(bundleManager.getStablePatch());
             }
         });
+        // FIXME rollback
     }
 
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("EventUpdate", EventUpdate);
-        constants.put("EventProgress", EventProgress);
+        // constants.put("EventProgress", EventProgress);
         constants.put("EventError", EventError);
-        constants.put("EventUpdated", EventUpdated);
+//        constants.put("EventUpdated", EventUpdated);
         return constants;
     }
 
@@ -149,6 +150,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         } catch (IOException e) {
             Log.d(TAG, e.toString());
         } finally {
+            Log.d(TAG, "Stable patch version is " + version);
             this.sendVersionBack(version);
         }
     }
@@ -171,12 +173,6 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putInt("version", version);
         sendEvent(this.getReactApplicationContext(), EventUpdate, params);
-    }
-
-    private void sendUpdatedEvent(int version) {
-        WritableMap params = Arguments.createMap();
-        params.putInt("version", version);
-        sendEvent(this.getReactApplicationContext(), EventUpdated, params);
     }
 
     private void sendErrorBack(final String message) {
@@ -207,20 +203,6 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         mainHandler.post(runnable);
     }
 
-    private void sendUpdatedEventBack(final int version) {
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        final RNAirLiteModule self = this;
-
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                self.sendUpdatedEvent(version);
-            }
-        };
-
-        mainHandler.post(runnable);
-    }
-
     private void sendVersionBack(final int version) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         final RNAirLiteModule self = this;
@@ -240,6 +222,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         int version = 0;
         HttpURLConnection urlConnection = null;
         try {
+            Log.d(TAG, "Ready to check updating");
             url = new URL(patchUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Accept-Encoding", "identity");
@@ -322,7 +305,9 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
             ByteBuffer stableBundle = this.readStableBundle();
             ByteBuffer newBundle = this.patch(stableBundle, this.decompress(patch));
             this.writeNewBundle(newBundle);
-            this.sendUpdatedEventBack(newPatchVersion);
+            this.bundleManager.saveNewBundle();
+            // FIXME try to reload bundle
+            // this.getReactApplicationContext().getPackageManager().
         } catch (MalformedURLException e) {
             this.sendErrorBack(e.toString());
         } catch (IOException e) {

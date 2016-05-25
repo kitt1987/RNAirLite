@@ -1,0 +1,26 @@
+{
+  "name": "rn-airlite-cli",
+  "version": "0.0.1",
+  "description": "Command line interface of react-native-air-lite",
+  "main": "index.js",
+  "bin": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Hot",
+    "Loading",
+    "React",
+    "Native"
+  ],
+  "author": "Kitt.Hsu",
+  "license": "BSD 2-Clause",
+  "dependencies": {
+    "argparse": "^1.0.7",
+    "colors": "^1.1.2",
+    "diff-match-patch": "^1.0.0",
+    "node-addon-bsdiff": "git+https://git@github.com/kitt1987/node-addon-bsdiff.git#master",
+    "node-addon-bz2": "git+https://git@github.com/kitt1987/node-addon-bz2.git#master",
+    "node-bsdiff": "^0.1.4"
+  }
+}

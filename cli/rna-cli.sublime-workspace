@@ -1,0 +1,1474 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"raw",
+				"rawDataHaser	(?)"
+			],
+			[
+				"pathc",
+				"patchBuf	(?)"
+			],
+			[
+				"readUin",
+				"readUInt32LE"
+			],
+			[
+				"path",
+				"patchBuf	(?)"
+			],
+			[
+				"readF",
+				"readFileSync	(?)"
+			],
+			[
+				"bytes",
+				"bytesRead"
+			],
+			[
+				"patch",
+				"patchName	(str)"
+			],
+			[
+				"pat",
+				"patchBuf	(?)"
+			],
+			[
+				"ver",
+				"verifyChecksum(buf, checksum)"
+			],
+			[
+				"old",
+				"oldBuf	(?)"
+			],
+			[
+				"sta",
+				"statNew	(?)"
+			],
+			[
+				"writ",
+				"writeFile(fd, buf, offset, length, position)"
+			],
+			[
+				"diff",
+				"diffBuf	(bool)"
+			],
+			[
+				"ch",
+				"chunkB	(?)"
+			],
+			[
+				"byt",
+				"bytesRead"
+			],
+			[
+				"C",
+				"CHUNK_SIZE	(num)"
+			],
+			[
+				"fs",
+				"fstatSync	(?)"
+			],
+			[
+				"open",
+				"openSync	(?)"
+			],
+			[
+				"rea",
+				"readUInt32LE"
+			],
+			[
+				"new",
+				"newest	(?)"
+			],
+			[
+				"publish",
+				"published"
+			],
+			[
+				"to",
+				"toJson	(?)"
+			],
+			[
+				"gift",
+				"giftID	(?)"
+			],
+			[
+				"markG",
+				"markGiftDone(cb)"
+			],
+			[
+				"cre",
+				"credit	(?)"
+			],
+			[
+				"credi",
+				"creditConsuming"
+			],
+			[
+				"git",
+				"giftDone	(?)"
+			],
+			[
+				"last",
+				"lastPos	(num)"
+			],
+			[
+				"after",
+				"afterLen	(num)"
+			],
+			[
+				"be",
+				"beforeLen	(num)"
+			],
+			[
+				"bo",
+				"beforeLen	(num)"
+			],
+			[
+				"on",
+				"onlineGift	(?)"
+			],
+			[
+				"ini",
+				"initialDate"
+			],
+			[
+				"com",
+				"commodity	(?)"
+			],
+			[
+				"state",
+				"stateChanged	(?)"
+			],
+			[
+				"stat",
+				"stateChanged	(?)"
+			],
+			[
+				"res",
+				"result	(?)"
+			],
+			[
+				"delete",
+				"deleteMyGift(gift, cb)"
+			],
+			[
+				"bef",
+				"beforeMe	[]"
+			],
+			[
+				"value",
+				"valueSaved	{}"
+			],
+			[
+				"local",
+				"localCached	(?)"
+			],
+			[
+				"loca",
+				"localCached	(?)"
+			],
+			[
+				"val",
+				"valueSaved	{}"
+			],
+			[
+				"valu",
+				"valueSaved	(?)"
+			],
+			[
+				"k",
+				"key"
+			],
+			[
+				"My",
+				"MyGift	(?)"
+			],
+			[
+				"M",
+				"MyGift	(?)"
+			],
+			[
+				"my",
+				"MyGift"
+			],
+			[
+				"req",
+				"require(id)"
+			],
+			[
+				"J",
+				"JsonReply(?)"
+			],
+			[
+				"ex",
+				"exists(path, callback?)"
+			],
+			[
+				"requ",
+				"requisiteCredits"
+			],
+			[
+				"comm",
+				"Commodity	(num)"
+			],
+			[
+				"ava",
+				"avatarURI"
+			],
+			[
+				"sms",
+				"smsSession	(?)"
+			],
+			[
+				"unlink",
+				"unlink(path, callback?)"
+			],
+			[
+				"wr",
+				"writeFileSync(filename, data, encoding?)"
+			],
+			[
+				"tr",
+				"truncateSync(path, len)"
+			],
+			[
+				"tes",
+				"testMysql(mysql, cb)"
+			],
+			[
+				"email",
+				"emailCode	(?)"
+			],
+			[
+				"em",
+				"emailVender"
+			],
+			[
+				"toS",
+				"toJson"
+			],
+			[
+				"time",
+				"timeSpan	(num)"
+			],
+			[
+				"validat",
+				"validatePhoneNo	(?)"
+			],
+			[
+				"mysq",
+				"mysqlAccount	(?)"
+			],
+			[
+				"free",
+				"freeman"
+			],
+			[
+				"re",
+				"require"
+			],
+			[
+				"encode",
+				"encodeURIComponent(uri)"
+			],
+			[
+				"c",
+				"cwd()"
+			],
+			[
+				"area",
+				"areaDB"
+			],
+			[
+				"profil",
+				"profileArg	{}"
+			],
+			[
+				"pr",
+				"profileArg	{}"
+			],
+			[
+				"lo",
+				"loadPhoneDB"
+			],
+			[
+				"get",
+				"getValue()"
+			],
+			[
+				"pe",
+				"pendings"
+			],
+			[
+				"f",
+				"forEach(f, context?)"
+			],
+			[
+				"orm",
+				"ormcache	(?)"
+			],
+			[
+				"tran",
+				"transaction"
+			],
+			[
+				"schema",
+				"schemaB	(?)"
+			],
+			[
+				"co",
+				"column	{}"
+			],
+			[
+				"toL",
+				"toLowerCase()"
+			],
+			[
+				"fla",
+				"flattenDeep	(?)"
+			],
+			[
+				"vali",
+				"validators	(?)"
+			],
+			[
+				"modu",
+				"modulePath"
+			],
+			[
+				"rename",
+				"rename(oldPath, newPath, callback?)"
+			],
+			[
+				"read",
+				"readdirSync(path)"
+			],
+			[
+				"e",
+				"existsSync(path)"
+			],
+			[
+				"func",
+				"function"
+			],
+			[
+				"rmd",
+				"rmdirSync(path)"
+			],
+			[
+				"mkdi",
+				"mkdirSync(path, mode?)"
+			],
+			[
+				"le",
+				"length	(num)"
+			],
+			[
+				"col",
+				"column	(?)"
+			],
+			[
+				"Sche",
+				"SchemaColumn(property)"
+			],
+			[
+				"server",
+				"server_account	(?)"
+			],
+			[
+				"redis",
+				"redisCache"
+			],
+			[
+				"pro",
+				"properties	(?)"
+			],
+			[
+				"lastS",
+				"lastStepTs	(?)"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"column",
+				"columnObj	{}"
+			],
+			[
+				"colu",
+				"columnObj	{}"
+			],
+			[
+				"tab",
+				"tableName"
+			],
+			[
+				"columnO",
+				"addColumnObj"
+			],
+			[
+				"ta",
+				"tableName"
+			],
+			[
+				"test",
+				"test_db"
+			],
+			[
+				"as",
+				"async	{}"
+			],
+			[
+				"proto",
+				"prototype	{}"
+			],
+			[
+				"a",
+				"addRequired(varname, path)"
+			],
+			[
+				"user",
+				"user_a	(?)"
+			],
+			[
+				"arg",
+				"arguments	[]"
+			],
+			[
+				"ar",
+				"arguments	[]"
+			],
+			[
+				"wa",
+				"waterfall_cbs	[]"
+			],
+			[
+				"async",
+				"async_cb	(?)"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"fu",
+				"function"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 207.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"hex",
+				"Hex Viewer: Toggle Hex View"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"ma",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"xml",
+				"xml2json"
+			],
+			[
+				"xml2",
+				"xml2json pretty"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				":e",
+				":e - Revert"
+			],
+			[
+				":0",
+				":0 - BOF"
+			],
+			[
+				":$",
+				":$ - EOF"
+			],
+			[
+				":q",
+				"Set Syntax: SQL"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"i",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"isnta",
+				"Package Control: Install Package"
+			],
+			[
+				"tern",
+				"TernJS: Reload"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"Tern",
+				"TernJS: Reload"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"Align",
+				"AlignTab: Live Preview Mode"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 267.0,
+		"history":
+		[
+			"sublime.log_commands(True)",
+			"sublime.log_commands(true)",
+			"debug",
+			"help()",
+			"?",
+			"help",
+			"node",
+			"defaults write com.sublimetext.2 ApplePressAndHoldEnabled -bool false",
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/KH/Documents/js/ReactNativeTencentXG/android/src/main/AndroidManifest.xml",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463843295996",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463843073629",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463840312342",
+		"/Users/KH/Documents/js/RNAirLite/cli/package.json",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bsdiff/README.md",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bsdiff/LICENSE.txt",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bz2/index.js",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bsdiff/native/bsdiff.cc",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bsdiff/index.js",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bz2/native/bz2.cc",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-addon-bsdiff/binding.gyp",
+		"/Users/KH/Documents/js/RNAirLite/cli/.gitignore",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463290875562",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463290683111",
+		"/Users/KH/Documents/js/RNAirLite/cli/latest.android.bundle",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-bsdiff/binding.gyp",
+		"/Users/KH/Documents/js/RNAirLite/cli/new.android.bundle",
+		"/Users/KH/Documents/js/RNAirLite/cli/node_modules/node-bsdiff/index.js",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463280885623",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463280788876",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463280663495",
+		"/Users/KH/Documents/js/RNAirLite/cli/patch@1-1463280420442",
+		"/Users/KH/Documents/js/RNAirLite/cli/index.js",
+		"/Users/KH/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
+		"/Users/KH/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
+		"/Users/KH/Library/Application Support/Sublime Text 3/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/KH/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/KH/Documents/js/ReactNativeTencentXG/sample/android/app/src/main/java/com/kh/txg/sample/MainActivity.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/react/LifecycleState.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/react/shell/BUCK",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/react/ReactRootView.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/react/bridge/ReactBridge.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/react/ReactPackage.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/systrace/Systrace.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/systrace/SystraceMessage.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/java/com/facebook/systrace/TraceListener.java",
+		"/Users/KH/Documents/js/react-native-0.25.1/ReactAndroid/src/main/AndroidManifest.xml",
+		"/Users/KH/Downloads/up.js",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《1986：阿富汗往事》by江亭 全文+番外.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《两个炮友鸣翠柳》by云上椰子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《九霄》作者：梦溪石【完结 +番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《以恶制恶》作者：番瓜小笼包.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《劣云头》BY旧弦.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《如何爷们地面对潜规则》作者：兴之所至.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《德古拉之吻》作者：WingYing.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《德萨罗人鱼》作者：深海先生（无河蟹完结版）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《我们都是好孩子》 BY烟的灰.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《时尚圈是基佬的天下》BY木三观【含部分番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《深不可测》by wy紫陌.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《男上加男》作者：恭喜发财【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《相见欢》作者：非天夜翔（完结）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《警卫连》BY 泡泡雪儿.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《阿喊》BY林擒年.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《陶生》BY旧弦.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《飞来横犬》作者：巫哲【番外全】.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《鬼服兵团[高积分]》by颜凉雨.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《魔法的若干种错误使用方式》by肚皮三层肉.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《魔道祖师[重生]》作者：墨香铜臭（完结）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/《龙性本淫，我一直都很明白》by云上椰子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/一手遮天，以头抢地BY云上椰子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/人鱼效应by黑猫白袜子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/先干为敬by wy紫陌.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/公主他坚决不退婚by大圆子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/军区大院by泡泡雪儿.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/出来报复社会迟早是要还的 by鱼球.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/千秋 by 梦溪石（完结and番外2）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/大米小麦by刺红(年下面瘫攻).txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/完全控制BY天望（完结+番外）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/害by风弄 (1).txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/寻鼎by朱砂.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/强制来的妻by：云上椰子.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/暗涌（精校）by肉酱意面.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/每一句说话 by anonymous.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/水流云在by林擒年.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/烈驹by寒菽.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/繁华by沐声.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/缠缚（水流云在）by南枝.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/论坛生活日常by古玉闻香.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/诡案追踪（修订版全）.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/诱惑 BY绿叶.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/韶光岛屿 by 堇色ivy.txt",
+		"/Volumes/GSP1RMCULXF/2016年4月看过/黑道大哥和鸡贼流氓的叉叉合约 by 兴之所至(正文+番外全).txt",
+		"/Users/KH/Downloads/tutorial-1.json",
+		"/Volumes/GSP1RMCULXF/你丫上瘾了？ by 柴鸡蛋(完结＋番外).txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/飞来横犬 完结by巫哲.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/重生算什么by天堂放逐者.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/逢春by大江流.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/设计师by常叁思.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/袁先生总是不开心by徐徐图之.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/胜却人间无数by边想.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/终身成就-边想.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/深入科学by十八反.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/治疗师by边想.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/无情物by薇诺拉.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/总裁不苏by河汉.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/强势攻防BY焦糖冬瓜.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/国王与龙by边想.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/后庭花 by万色.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/傲慢与偏见 作者：千十九【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/众目睽睽之外by机械性进食.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《胜却人间无数》作者：边想【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《星辉之下》BY边想.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《教你如何追男神》作者：边想【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《抱枕修养日记》单三三.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《恋兄》作者：边想【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《当年离骚》BY河汉.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《天敌》作者：边想【全本】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《最终流放》作者：河汉(全本+番外).txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/《一派狐言》作者：四喜汤圆【完结】.txt",
+		"/Volumes/GSP1RMCULXF/2016年2月看过/[绍离]《光影》.txt",
+		"/Users/KH/Downloads/react-native-video-master/package.json",
+		"/Users/KH/Documents/js/freetool/hole_cli/sample/question/4.json",
+		"/Users/KH/Documents/js/freetool/hole_cli/sample/question/5.json",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/[绍离]《光影》.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《一醉经年[金推]》by水千丞.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《似是故人来（完结+番外）》作者：漫漫何其多.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《分手》作者：千十九【完结+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《分手四个月》BY娇羞胡萝卜（任性受隐忍攻）.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《国家一级注册驱魔师上岗培训通知》作者：非天夜翔【番外全】.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《国师帮帮忙》BY非天夜翔【番全】.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《岁月间》作者：静水边.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《帝都异事录》作者：香小陌（完结＋番外）.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《我快死了》BY樱桃.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《祸害成患妖成灾》作者：恩顾【全本+番外】.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《穆然》完结+番外 作者：孤君.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《繁花落》作者：我有千言我有万语.txt",
+		"/Volumes/GSP1RMCULXF/2016年1月看过/《绯闻》BY三摇.txt"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"/Users/KH/Documents/js/freebacking"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"calcDiff",
+			"compressEnd",
+			"selfDiff",
+			"parser",
+			"\n  		",
+			"buildHeader",
+			"ReactContextInitAsyncTask",
+			"6Tq1pBG2q30NRpH",
+			"email@email.com",
+			"6Tq1pBG2q30NRpH",
+			"acknowledgeGiftWithoutAddress",
+			"console",
+			"getMyGift",
+			"myGiftID",
+			"});\n",
+			"hole",
+			"getMyGift",
+			"MyGift",
+			"orm",
+			"sms",
+			"orm",
+			"mygift",
+			"$2",
+			"waterf",
+			"logger",
+			"error",
+			"commodity",
+			"eh",
+			"readArgs",
+			"profile",
+			"um",
+			"readArgs",
+			"MemcachedStore",
+			"cb",
+			"express",
+			"t.option.flowControl",
+			"t.option",
+			"validate",
+			"disconnect",
+			"');\n",
+			"profile",
+			"F3",
+			"F2",
+			"F1",
+			"this",
+			"self",
+			"fs",
+			"this.orm",
+			"self.orm",
+			"test.equal",
+			"['dropIndex']",
+			"['addIndex']",
+			"['modify']",
+			"['drop']",
+			"['add']",
+			"['create']",
+			"ddlTable",
+			"tableName",
+			"_switchDB",
+			"schemas",
+			"ORM",
+			"ORM.prototype",
+			"arrayWrapped",
+			"'",
+			"orm",
+			"Memory",
+			"Memory/i",
+			"		\n",
+			"_relation",
+			"validatorsn",
+			"insert",
+			"project",
+			"side",
+			"ctrl\\+shift\\+",
+			"ctrl\\+shift\\+c",
+			"tern",
+			"auto_complete",
+			"ignore",
+			"List",
+			"credit_charge: 0",
+			"credit: 0",
+			"(0x[\\d\\w]+)",
+			"This.*\\s*",
+			"(0x[\\d\\w]+)\\s*",
+			"This.*",
+			"(0x[\\d\\w]+)",
+			"(\")$",
+			"(S[\\S]*)",
+			"\"([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})",
+			"0x([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})([\\d\\w]{2})",
+			"(0x[\\d\\w]+)",
+			"vnodeopv_entry_desc",
+			"info",
+			"elf",
+			"CreateFile.CreateTr",
+			"[findfiles]",
+			"(0x[\\d\\w]+)",
+			"(File)",
+			"([\\d]+)",
+			"Query",
+			"32",
+			"114001",
+			"name = com.apple.metadata:_kMDItemUserTags",
+			"The.+",
+			"(0x[\\d\\w]+)",
+			"paramIndex",
+			"paramCallbacks",
+			"View",
+			"'view'",
+			"cache",
+			"arguments",
+			"fns",
+			"exports",
+			"(0x[\\d\\w]+)",
+			"^(F)",
+			"([\\d]+)",
+			"(0x[\\d\\w]+)",
+			"(0x\\d+)",
+			"(0x[\\d\\w]+)",
+			"(SMB2)",
+			"(0x[\\d\\w]+)",
+			"(SMB2) ",
+			"(SMB2 )",
+			"SMB2",
+			"BOOST_FUNCTION_FUNCTION",
+			"generic_",
+			"delete_command.cc",
+			"rename_command.cc"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"t.option",
+			"validateSMS",
+			"code",
+			"city",
+			"province",
+			"orm",
+			"test.eq",
+			".dropIndex",
+			".addIndex",
+			".modify",
+			".drop",
+			".add",
+			".create",
+			"exports",
+			"toArray",
+			"exports",
+			"= $1,",
+			"",
+			"= $1,",
+			"",
+			"= $1,",
+			"= $1;",
+			"$1;",
+			"static char const* $1 = ",
+			"\"\\\\x$1\\\\x$2\\\\x$3\\\\x$4\\\\x$5\\\\x$6\\\\x$7\\\\x$8\\\\x$9\\\\x$10\\\\x$11\\\\x$12\"",
+			"\"\\\\x$1\\\\x$2\\\\x$3\\\\x$4\"",
+			"\"\\x$1\\x$2\\x$3\\x$4\"",
+			"=$1,",
+			"k$1",
+			"=$1",
+			"=$1,",
+			"$1,",
+			"",
+			"64",
+			"",
+			"=$1,",
+			"k$1",
+			"=$1,",
+			"=($1),",
+			"(uint16)$1",
+			"$1\\n",
+			"#define $1",
+			"=$1,",
+			"$1_",
+			"($1)_",
+			"=$1,",
+			"'\\\\x$1',",
+			"",
+			"'\\\\x$1',",
+			"'$1', '\\\\x00',",
+			"'$1',",
+			"'\\\\x$1',",
+			"",
+			"'\\\\x$1',",
+			"",
+			"'\\\\x$1',",
+			"'$1', '\\\\x00',",
+			"'$1', '\\\\x00'",
+			"'$1',",
+			"'\\\\x$1',",
+			"'$1',",
+			"'\\\\x$1',",
+			"'\\x$1',",
+			"=$1,"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 30.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 234.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.hex_viewer_inspector":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "",
+	"project": "rna-cli.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"package",
+				"package.json"
+			],
+			[
+				"pack",
+				"package.json"
+			],
+			[
+				"args",
+				"args.json"
+			],
+			[
+				"args.m",
+				"args.mac.json"
+			],
+			[
+				"",
+				"args.json"
+			],
+			[
+				"args.ma",
+				"args.mac.json"
+			],
+			[
+				"store.js",
+				"node_modules/umhelper.js/lib/requests/store.js"
+			],
+			[
+				"raw",
+				"node_modules/umhelper.js/lib/requests/raw_reqs.js"
+			],
+			[
+				"1_ho",
+				"integration/tc/1_hole_commodity_gift.js"
+			],
+			[
+				"ke",
+				"lib/cache/keygen.js"
+			],
+			[
+				"profile",
+				"lib/profile.js"
+			],
+			[
+				"tools",
+				"lib/tools.js"
+			],
+			[
+				"flow",
+				"lib/flow_control.js"
+			],
+			[
+				"hole",
+				"integration/tc/1_hole_commodity_gift.js"
+			],
+			[
+				"too",
+				"lib/tools.js"
+			],
+			[
+				"args.json",
+				"args.json"
+			],
+			[
+				"index",
+				"node_modules/multer/index.js"
+			],
+			[
+				"clu",
+				"lib/cluster.js"
+			],
+			[
+				"pa",
+				"package.json"
+			],
+			[
+				"args.mac",
+				"args.mac.json"
+			],
+			[
+				"upload",
+				"lib/file_upload.js"
+			],
+			[
+				"clus",
+				"lib/cluster.js"
+			],
+			[
+				"logger",
+				"lib/logger.js"
+			],
+			[
+				"args.",
+				"args.json"
+			],
+			[
+				"gift",
+				"lib/hole/gift.js"
+			],
+			[
+				"oc",
+				"node_modules/.bin/ocddl"
+			],
+			[
+				"comm",
+				"lib/hole/commodity.js"
+			],
+			[
+				"dml/index",
+				"node_modules/ormcache.js/lib/dml/index.js"
+			],
+			[
+				"logg",
+				"lib/logger.js"
+			],
+			[
+				"json",
+				"node_modules/umhelper.js/lib/requests/json_reply.js"
+			],
+			[
+				"req",
+				"lib/requests.js"
+			],
+			[
+				"error",
+				"lib/error_handler.js"
+			],
+			[
+				"pakc",
+				"package.json"
+			],
+			[
+				"requ",
+				"lib/requests.js"
+			],
+			[
+				"local",
+				"test/locale.js"
+			],
+			[
+				"p",
+				"package.json"
+			],
+			[
+				"pac",
+				"package.json"
+			],
+			[
+				"sms",
+				"lib/sms.js"
+			],
+			[
+				"logge",
+				"lib/logger.js"
+			],
+			[
+				"args.j",
+				"args.json"
+			],
+			[
+				"packa",
+				"package.json"
+			],
+			[
+				"email",
+				"lib/email.js"
+			],
+			[
+				"key",
+				"lib/keygen.js"
+			],
+			[
+				"util",
+				"integration/util.js"
+			],
+			[
+				"file_up",
+				"lib/file_upload.js"
+			],
+			[
+				"cluset",
+				"lib/cluster.js"
+			],
+			[
+				"arg",
+				"args.json"
+			],
+			[
+				"index.",
+				"lib/index.js"
+			],
+			[
+				"index.js",
+				"index.js"
+			],
+			[
+				"inde",
+				"index.js"
+			],
+			[
+				"mysql",
+				"lib/engine/mysql.js"
+			],
+			[
+				"mem",
+				"lib/engine/memcached.js"
+			],
+			[
+				"record",
+				"lib/record.js"
+			],
+			[
+				"schema",
+				"lib/schema.js"
+			],
+			[
+				"redis",
+				"lib/engine/redis.js"
+			],
+			[
+				"data",
+				"lib/ddl/datatype.js"
+			],
+			[
+				"ddle",
+				"lib/ddl/ddl_engine.js"
+			],
+			[
+				"mysq",
+				"lib/engine/mysql.js"
+			],
+			[
+				"trans",
+				"lib/dml/transaction.js"
+			],
+			[
+				"schem",
+				"lib/schema.js"
+			],
+			[
+				"ddl",
+				"bin/ddl.js"
+			],
+			[
+				"connec",
+				"lib/engine/connector.js"
+			],
+			[
+				"ddl_",
+				"lib/ddl/ddl_engine.js"
+			],
+			[
+				"func",
+				"test/common_cases/function_test.js"
+			],
+			[
+				"fun",
+				"node_modules/lodash/function.js"
+			],
+			[
+				"step",
+				"lib/ddl/step_loader.js"
+			],
+			[
+				"read",
+				"readme.md"
+			],
+			[
+				"dat",
+				"lib/ddl/datatype.js"
+			],
+			[
+				"orm",
+				"lib/orm.js"
+			],
+			[
+				"recor",
+				"lib/record.js"
+			],
+			[
+				"ddl_e",
+				"lib/ddl/ddl_engine.js"
+			],
+			[
+				"step_",
+				"lib/ddl/step_loader.js"
+			],
+			[
+				"query",
+				"lib/dml/query.js"
+			],
+			[
+				"ddl_en",
+				"lib/ddl/ddl_engine.js"
+			],
+			[
+				"load",
+				"test/load_steps.js"
+			],
+			[
+				"condition",
+				"test/conditions.js"
+			],
+			[
+				"condi",
+				"lib/dml/condition.js"
+			],
+			[
+				"live",
+				"test/live_connection.js"
+			],
+			[
+				"js",
+				"node_modules/nodeunit/deps/json2.js"
+			],
+			[
+				"memca",
+				"lib/engine/memcached.js"
+			],
+			[
+				"connector",
+				"lib/engine/connector.js"
+			],
+			[
+				"ste",
+				"lib/ddl/step_loader.js"
+			],
+			[
+				"lo",
+				"test/load_steps.js"
+			],
+			[
+				"ddl_loa",
+				"lib/ddl/step_loader.js"
+			],
+			[
+				"l",
+				"test/load_steps.js"
+			],
+			[
+				"loa",
+				"test/load_steps.js"
+			],
+			[
+				"rec",
+				"lib/record.js"
+			],
+			[
+				"que",
+				"lib/dml/query.js"
+			],
+			[
+				"mys",
+				"lib/engine/mysql.js"
+			],
+			[
+				"redi",
+				"lib/engine/redis.js"
+			],
+			[
+				"con",
+				"test/conditions.js"
+			],
+			[
+				"reco",
+				"lib/record.js"
+			],
+			[
+				"dd",
+				"ddl.js"
+			],
+			[
+				"sche",
+				"lib/schema.js"
+			],
+			[
+				"prog",
+				"lib/progress.js"
+			],
+			[
+				"exten",
+				"lib\\waterline\\utils\\extend.js"
+			],
+			[
+				"loader",
+				"lib\\waterline\\collection\\loader.js"
+			],
+			[
+				"hoo",
+				"lib\\hookable.js"
+			],
+			[
+				"t.sj",
+				"t.js"
+			],
+			[
+				"vali",
+				"lib\\validatable.js"
+			],
+			[
+				"ab",
+				"lib\\abstract-class.js"
+			],
+			[
+				"s",
+				"lib\\schema.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Documents/js/umhelper.js/um.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 288.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 1,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 246.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -11,18 +11,25 @@ import {
   View
 } from 'react-native';
 
+import * as AirLite from 'react-native-air-lite';
+// const AirLite = require('react-native-air-lite');
+
 class sample extends Component {
+  sample() {
+    this.url = 'http://localhost'
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
+        <Text style={styles.instructions} onPress={() => AirLite.checkUpdate(this.url)}>
+          Check Update
         </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
+        <Text style={styles.instructions} onPress={() => AirLite.update(this.url)}>
+          Update
         </Text>
       </View>
     );

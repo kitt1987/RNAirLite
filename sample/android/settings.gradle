@@ -2,5 +2,5 @@ rootProject.name = 'sample'
 
 include ':app'
 
-include ':RNAirLite'
-project(':RNAirLite').projectDir = new File(rootProject.projectDir, '../node_modules/RNAirLite/android')
+include ':react-native-air-lite'
+project(':react-native-air-lite').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-air-lite/android')

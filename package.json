@@ -1,5 +1,5 @@
 {
-  "name": "RNAirLite",
+  "name": "react-native-air-lite",
   "version": "0.0.1",
   "private": true,
   "scripts": {},
@@ -8,12 +8,12 @@
     "react-native": "^0.26.1"
   },
   "files": [
-    "README.md",
     "index.ios.js",
     "index.android.js",
     "ios/",
     "android/src/",
-    "android/build.gradle"
+    "android/build.gradle",
+    "README.md"
   ],
   "keywords": []
 }
