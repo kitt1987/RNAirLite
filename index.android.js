@@ -11,20 +11,29 @@ function allEvents() {
   return [
     AirLite.EventUpdate,
     AirLite.EventError,
-    AirLite.EventUpdated
+    AirLite.EventProgress,
+    AirLite.EventInstalled,
   ];
 }
 
-function checkUpdate(url) {
-  AirLite.checkUpdate(url);
+function init(uri, bundleVersion, storePatchInSD) {
+  AirLite.checkUpdate(uri, bundleVersion, !!storePatchInSD);
 }
 
-function update(url) {
-  AirLite.update(url);
+function checkUpdate() {
+  AirLite.checkUpdate();
 }
 
-function rollbackOnError(enable) {
-  AirLite.rollbackOnError();
+function downloadPatch() {
+  AirLite.downloadPatch();
+}
+
+function installPatch(restartManually) {
+  AirLite.installPatch(restartManually);
+}
+
+function restart() {
+  AirLite.restart();
 }
 
 function addEventListener(event, listener) {
@@ -34,8 +43,10 @@ function addEventListener(event, listener) {
 }
 
 module.exports = {
+  allEvents,
+  init,
   checkUpdate,
-  update,
-  rollbackOnError,
+  downloadPatch,
+  installPatch,
   addEventListener
 };

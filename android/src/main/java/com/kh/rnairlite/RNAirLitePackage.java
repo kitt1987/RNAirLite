@@ -16,15 +16,11 @@ import java.util.List;
  * Created by KH on 5/22/16.
  */
 public class RNAirLitePackage implements ReactPackage {
-    private String bundleAssetName;
-    public RNAirLitePackage(String bundleAssetName) {
-        super();
-        this.bundleAssetName = bundleAssetName;
-    }
 
-    public RNAirLitePackage() {
-        super();
-        this.bundleAssetName = "index.android.bundle";
+    private final RNAirPatchManager mPatchManager;
+
+    public RNAirLitePackage(RNAirPatchManager patchManager) {
+        mPatchManager = patchManager;
     }
 
     @Override
@@ -42,13 +38,8 @@ public class RNAirLitePackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new RNAirLiteModule(reactContext, this.bundleAssetName));
+        modules.add(new RNAirLiteModule(reactContext, mPatchManager));
 
         return modules;
-    }
-
-    public static String getJSBundleFile(Context reactContext) {
-        RNAirLiteBundleManager bundleManager = new RNAirLiteBundleManager(reactContext);
-        return bundleManager.getBundleFile();
     }
 }

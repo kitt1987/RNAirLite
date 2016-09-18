@@ -2,12 +2,16 @@
   "name": "react-native-air-lite",
   "version": "0.0.1",
   "private": true,
+  "bin": {
+    "airpatch": "cli/index.js"
+  },
   "scripts": {},
   "peerDependencies": {
     "react": "^15.0.2",
     "react-native": "^0.26.1"
   },
   "files": [
+    "cli",
     "index.ios.js",
     "index.android.js",
     "ios/",
@@ -15,5 +19,12 @@
     "android/build.gradle",
     "README.md"
   ],
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "argparse": "^1.0.7",
+    "colors": "^1.1.2",
+    "node-addon-bsdiff": "git+https://git@github.com/kitt1987/node-addon-bsdiff.git#master",
+    "node-addon-bz2": "git+https://git@github.com/kitt1987/node-addon-bz2.git#master",
+    "tar": "^2.2.1"
+  }
 }
