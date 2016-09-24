@@ -2,6 +2,7 @@
 
 const tr = require('./trivial');
 const fs = require('fs');
+const fse = require('./fs_extra');
 const path = require('path');
 const cp = require('child_process');
 const util = require('util');
@@ -30,11 +31,6 @@ const HEADER_LENGTH = {
 const LENGTH_HEADER = Object.keys(HEADER_LENGTH).reduce(
   (prev, k) => prev + HEADER_LENGTH[k], 0);
 
-function mkdirSync(yourPath) {
-  if (fs.existsSync(yourPath)) return;
-  fs.mkdirSync(yourPath);
-}
-
 function isRegular(filePath) {
   if (!fs.existsSync(filePath)) {
     tr.error(filePath + ' not found!');
@@ -48,31 +44,32 @@ function isRegular(filePath) {
   }
 }
 
-function loadAllPatches(platform) {
-  var patches = fs.readdirSync(path.join(PATCH_BASE, platform));
+function loadAllPatches(patchBase) {
+  var patches = fs.readdirSync(patchBase);
   patches = patches.filter(p => {
     if (p[0] === '.') return false;
     var isDigital = /^\d+$/.test(p);
     if (!isDigital) {
-      tr.warn(p + ' is not a valid patch version.');
-      return isDigital;
+      if (p !== NEWEST_PATCH) tr.warn(p + ' is not a valid patch version.');
+      return false;
     }
 
-    var versionPath = path.join(PATCH_BASE, platform, p);
+    var versionPath = path.join(patchBase, p);
     var stat = fs.statSync(versionPath);
     if (!stat.isDirectory()) {
       tr.error(p + ' is not a valid cause it is not a directory.');
       return false;
     }
 
-    return isRegular(path.join(platformPath, RAW_ASSETS)) &&
-      isRegular(path.join(platformPath, BASE_PACKAGE));
+    return fse.isRegularFile(path.join(versionPath, RAW_ASSETS)) &&
+      fse.isRegularFile(path.join(versionPath, BASE_PACKAGE));
   }).map(p => parseInt(p)).sort((a, b) => b - a);
+
+  console.log('Patches are', patches);
   return patches;
 }
 
 function getBundleCommand(platform, patchDir, entry) {
-  // platform entry-file platform output-directory output-directory
   if (platform !== 'ios' && platform !== 'android')
     throw new Error('Only ios and android are supported. ->' + platform);
   if (!patchDir)
@@ -92,8 +89,9 @@ class PatchManager {
     this.platform = platform;
     this.entry = entry || 'index';
 
-    mkdirSync(path.join(PATCH_BASE, this.platform));
-    this.patches = loadAllPatches(this.platform);
+    const patchBase = path.join(PATCH_BASE, this.platform);
+    fse.mkdirSync(patchBase);
+    this.patches = loadAllPatches(patchBase);
     if (this.patches.length > 0) {
       this.newVersion = 2 + this.patches[0];
       this.latestVersion = 1 + this.patches[0];
@@ -101,10 +99,16 @@ class PatchManager {
       this.newVersion = 0;
       this.latestVersion = 0;
     }
+
+    if (fs.existsSync(path.join(patchBase, NEWEST_PATCH)))
+      this.patches.push(NEWEST_PATCH);
+
+    console.log('The latest version is', this.latestVersion);
+    console.log('The new version will be', this.newVersion);
   }
 
   getPath(version, file) {
-    if (!version) {
+    if (version === undefined || version === null) {
       return path.join(PATCH_BASE, this.platform);
     }
 
@@ -140,15 +144,7 @@ class PatchManager {
   }
 
   prepareForNewPatch() {
-    const newPatchPath = this.getNewPatchPath();
-    if (fs.existsSync(newPatchPath)) {
-      fs.renameSync(newPatchPath, this.getPath(this.latestVersion));
-    }
-
-    [
-      this.getPath(NEWEST_PATCH),
-      this.getIntermediatesPath(),
-    ].map(mkdirSync);
+    fse.mkdirSync(this.getIntermediatesPath());
   }
 
   pack(content, fileOut) {
@@ -165,14 +161,17 @@ class PatchManager {
       0
     );
 
-    fs.writeFileSync(fileOut, Buffer.concat([header, patchBuf]));
+    const temp = this.getIntermediatesPath('pack.tmp');
+    fs.writeFileSync(temp, Buffer.concat([header, patchBuf]));
+    fse.replace(fileOut, temp);
     tr.info('The new patch outputs to ' + fileOut);
   }
 
   buildNewPatch() {
     this.prepareForNewPatch();
     const intermediatesRawPatch = this.getIntermediatesPath();
-    const newAssetsTar = this.getNewVersionRawPatch();
+    const tmpAssetsTar = '/tmp/' + RAW_ASSETS;
+    const newAssetsTar = this.getIntermediatesPath(RAW_ASSETS);
 
     cp.exec(getBundleCommand(this.platform, intermediatesRawPatch, this.entry),
       (error, stdout, stderr) => {
@@ -194,34 +193,43 @@ class PatchManager {
             console.error('An error occurred:', err);
           })
           .on('end', () => {
+            fse.replace(newAssetsTar, tmpAssetsTar);
             const newAssetsBytes = fs.readFileSync(newAssetsTar);
-            const patchPath = this.getNewVersionPatchPath();
-            this.pack(newAssetsBytes, patchPath);
 
             this.patches.forEach((version) => {
               const assetsBytes = fs.readFileSync(this.getRawAssets(version));
               var patchRawBuf = bs.diff(assetsBytes, newAssetsBytes);
+              // FIXME null will be returned if 2 buffers are same.
               if (!patchRawBuf) {
-                tr.error(
+                throw new Error(
                   'Both version ' + version + ' and the newest have same bundle.'
                 );
-                return;
               }
 
               this.pack(patchRawBuf, this.getPatchPath(version));
             });
+
+            const newPatchPath = this.getNewPatchPath();
+            if (fs.existsSync(newPatchPath)) {
+              fse.replace(this.getPath(this.latestVersion), newPatchPath);
+            }
+
+            fs.mkdirSync(newPatchPath);
+            fse.replace(this.getNewVersionRawPatch(), newAssetsTar);
+            this.pack(newAssetsBytes, this.getNewVersionPatchPath());
+            fse.rm(this.getIntermediatesPath());
           });
 
 
         fstream.Reader({
             path: intermediatesRawPatch,
-            type: "Directory"
+            type: "Directory",
           })
           .on('error', err => {
             console.error('An error occurred:', err);
           })
           .pipe(packer)
-          .pipe(fs.createWriteStream(newAssetsTar));
+          .pipe(fs.createWriteStream(tmpAssetsTar));
       }
     );
   }
