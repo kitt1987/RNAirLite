@@ -49,13 +49,13 @@ function main() {
   );
 
   parser.addArgument(
-    ['--patch-version'], {
+    ['--patchVersion'], {
       help: 'Patch of which version you want to verfify or update.'
     }
   );
 
   var args = parser.parseArgs();
-  var pm = new PatchManager(args.platform, args.entry);
+  var pm = new PatchManager(args.platform, args.entry, args.patchVersion);
 
   if (args.verify) {
     tr.error('To be implemented');

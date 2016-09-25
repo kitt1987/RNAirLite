@@ -63,8 +63,24 @@ function getBundleCommand(platform, patchDir, entry) {
     patchDir);
 }
 
+function loadPatchVersion(patchPath) {
+  const fd = fs.openSync(patchPath, 'r');
+  const buf = Buffer.alloc(HEADER_LENGTH.VERSION);
+  const bytesRead = fs.readSync(
+    fd, buf, 0,
+    HEADER_LENGTH.VERSION,
+    HEADER_LENGTH.PACK_VERSION
+  );
+
+  fs.closeSync(fd);
+  if (bytesRead !== HEADER_LENGTH.VERSION)
+    throw new Error(patchPath + ' is corrupted.');
+
+  return buf.readUInt32LE();
+}
+
 class PatchManager {
-  constructor(platform, entry) {
+  constructor(platform, entry, newestVersion) {
     if (platform !== 'android' && platform !== 'ios') {
       throw new Error('The platform must be android or ios');
     }
@@ -75,11 +91,11 @@ class PatchManager {
     const patchBase = path.join(PATCH_BASE, this.platform);
     fse.mkdirSync(patchBase);
     this.patches = loadAllPatches(patchBase);
-    tr.info('Versions of patches loaded are', this.patches);
 
     if (this.patches.length > 0) {
-      this.newVersion = 1 + this.patches[0];
+      tr.info('Versions of patches loaded are', this.patches);
       this.latestVersion = 1 + this.patches[0];
+      this.newVersion = 1 + this.patches[0];
     } else {
       this.newVersion = 0;
       this.latestVersion = 0;
@@ -87,7 +103,18 @@ class PatchManager {
 
     if (fs.existsSync(path.join(patchBase, NEWEST_PATCH))) {
       this.patches.push(NEWEST_PATCH);
-      ++this.newVersion;
+      this.latestVersion = loadPatchVersion(this.getNewVersionPatchPath());
+      this.newVersion = this.latestVersion + 1;
+    }
+
+    if (newestVersion) {
+      if (newestVersion <= this.newVersion) {
+        throw new Error(
+          'The version of newest patch must be greater than' + this.newVersion
+        );
+      }
+
+      this.newVersion = newestVersion;
     }
 
     tr.info('The latest version will be', this.latestVersion);
