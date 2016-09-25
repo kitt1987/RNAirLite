@@ -3,9 +3,15 @@
 const fs = require('fs');
 const path = require('path');
 
+function mkdirp(fullPath) {
+  const parent = path.dirname(fullPath);
+  if (!fs.existsSync(parent)) mkdirp(parent);
+  fs.mkdirSync(fullPath);
+}
+
 function mkdirSync(yourPath) {
   if (fs.existsSync(yourPath)) return;
-  fs.mkdirSync(yourPath);
+  mkdirp(yourPath);
 }
 
 function isRegularFile(fullPath) {
@@ -14,7 +20,6 @@ function isRegularFile(fullPath) {
 }
 
 function replace(dst, src) {
-  console.log('Move from', src, 'to', dst);
   rm(dst);
   cp(src, dst);
   rm(src);

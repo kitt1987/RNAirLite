@@ -31,22 +31,8 @@ const HEADER_LENGTH = {
 const LENGTH_HEADER = Object.keys(HEADER_LENGTH).reduce(
   (prev, k) => prev + HEADER_LENGTH[k], 0);
 
-function isRegular(filePath) {
-  if (!fs.existsSync(filePath)) {
-    tr.error(filePath + ' not found!');
-    return false;
-  }
-
-  var stat = fs.statSync(filePath);
-  if (!stat.isFile()) {
-    tr.error(filePath + ' is not a regular file.');
-    return false;
-  }
-}
-
 function loadAllPatches(patchBase) {
-  var patches = fs.readdirSync(patchBase);
-  patches = patches.filter(p => {
+  return fs.readdirSync(patchBase).filter(p => {
     if (p[0] === '.') return false;
     var isDigital = /^\d+$/.test(p);
     if (!isDigital) {
@@ -64,9 +50,6 @@ function loadAllPatches(patchBase) {
     return fse.isRegularFile(path.join(versionPath, RAW_ASSETS)) &&
       fse.isRegularFile(path.join(versionPath, BASE_PACKAGE));
   }).map(p => parseInt(p)).sort((a, b) => b - a);
-
-  console.log('Patches are', patches);
-  return patches;
 }
 
 function getBundleCommand(platform, patchDir, entry) {
@@ -92,19 +75,23 @@ class PatchManager {
     const patchBase = path.join(PATCH_BASE, this.platform);
     fse.mkdirSync(patchBase);
     this.patches = loadAllPatches(patchBase);
+    tr.info('Versions of patches loaded are', this.patches);
+
     if (this.patches.length > 0) {
-      this.newVersion = 2 + this.patches[0];
+      this.newVersion = 1 + this.patches[0];
       this.latestVersion = 1 + this.patches[0];
     } else {
       this.newVersion = 0;
       this.latestVersion = 0;
     }
 
-    if (fs.existsSync(path.join(patchBase, NEWEST_PATCH)))
+    if (fs.existsSync(path.join(patchBase, NEWEST_PATCH))) {
       this.patches.push(NEWEST_PATCH);
+      ++this.newVersion;
+    }
 
-    console.log('The latest version is', this.latestVersion);
-    console.log('The new version will be', this.newVersion);
+    tr.info('The latest version will be', this.latestVersion);
+    tr.info('The new version will be', this.newVersion);
   }
 
   getPath(version, file) {
@@ -164,7 +151,6 @@ class PatchManager {
     const temp = this.getIntermediatesPath('pack.tmp');
     fs.writeFileSync(temp, Buffer.concat([header, patchBuf]));
     fse.replace(fileOut, temp);
-    tr.info('The new patch outputs to ' + fileOut);
   }
 
   buildNewPatch() {
@@ -173,10 +159,11 @@ class PatchManager {
     const tmpAssetsTar = '/tmp/' + RAW_ASSETS;
     const newAssetsTar = this.getIntermediatesPath(RAW_ASSETS);
 
+    tr.info('Building new JS bundle...');
     cp.exec(getBundleCommand(this.platform, intermediatesRawPatch, this.entry),
       (error, stdout, stderr) => {
         if (error) {
-          console.error('An error occurred:', err);
+          tr.error('An error occurred:', err);
           return;
         }
 
@@ -185,28 +172,24 @@ class PatchManager {
           throw new Error('Fail to build RN bundle.js');
         }
 
-        tr.info(stdout);
+        tr.verbose(stdout);
         var packer = tar.Pack({
             noProprietary: true
           })
           .on('error', err => {
-            console.error('An error occurred:', err);
+            tr.error('An error occurred:', err);
           })
           .on('end', () => {
             fse.replace(newAssetsTar, tmpAssetsTar);
+            tr.info('The newest JS bundle is packed.');
             const newAssetsBytes = fs.readFileSync(newAssetsTar);
 
             this.patches.forEach((version) => {
               const assetsBytes = fs.readFileSync(this.getRawAssets(version));
-              var patchRawBuf = bs.diff(assetsBytes, newAssetsBytes);
-              // FIXME null will be returned if 2 buffers are same.
-              if (!patchRawBuf) {
-                throw new Error(
-                  'Both version ' + version + ' and the newest have same bundle.'
-                );
-              }
-
-              this.pack(patchRawBuf, this.getPatchPath(version));
+              const patchRawBuf = bs.diff(assetsBytes, newAssetsBytes);
+              const patchPath = this.getPatchPath(version);
+              this.pack(patchRawBuf, patchPath);
+              tr.info('Generating patch for version', version, patchPath);
             });
 
             const newPatchPath = this.getNewPatchPath();
@@ -218,15 +201,15 @@ class PatchManager {
             fse.replace(this.getNewVersionRawPatch(), newAssetsTar);
             this.pack(newAssetsBytes, this.getNewVersionPatchPath());
             fse.rm(this.getIntermediatesPath());
+            tr.info('The newest patch version is', this.newVersion);
           });
-
 
         fstream.Reader({
             path: intermediatesRawPatch,
             type: "Directory",
           })
           .on('error', err => {
-            console.error('An error occurred:', err);
+            tr.error('An error occurred:', err);
           })
           .pipe(packer)
           .pipe(fs.createWriteStream(tmpAssetsTar));

@@ -1,20 +1,20 @@
 'use strict';
 const colors = require('colors');
 
-function warn(t) {
-	console.log(t.yellow);
+function warn(...text) {
+	console.log(colors.yellow(text.join(' ')));
 }
 
-function info(t) {
-	console.log(t.green);
+function info(...text) {
+	console.log(colors.green(text.join(' ')));
 }
 
-function verbose(t) {
-	console.log(t);
+function verbose(...text) {
+	console.log(text);
 }
 
-function error(t) {
-	console.log(t.red);
+function error(...text) {
+	console.log(colors.red(text.join(' ')));
 }
 
 module.exports = {
