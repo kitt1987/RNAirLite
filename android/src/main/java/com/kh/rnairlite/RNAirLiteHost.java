@@ -72,13 +72,7 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
                             return;
                         }
 
-                        UiThreadUtil.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                RNAirLiteHost.this.clear();
-                                getReactInstanceManager().createReactContextInBackground();
-                            }
-                        });
+                        reboot();
                     }
                 });
 
@@ -96,5 +90,15 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
         }
 
         return builder.build();
+    }
+
+    public void reboot() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RNAirLiteHost.this.clear();
+                getReactInstanceManager().createReactContextInBackground();
+            }
+        });
     }
 }

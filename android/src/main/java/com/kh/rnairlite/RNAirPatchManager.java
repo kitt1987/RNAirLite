@@ -246,7 +246,7 @@ public class RNAirPatchManager {
 
     public String installPatch() {
         // FIXME validate patch
-        // FIXME if mVersion is 0, then just extract the patct. Else patch to the running bundle.
+        // FIXME if mVersion is 0, then just extract the patch. Else patch to the running bundle.
         // FIXME move all bundles
     }
 
@@ -307,8 +307,8 @@ public class RNAirPatchManager {
 
     private static String getPatchURI(String uri, int version) {
         if (!uri.endsWith("/")) uri += "/";
-        if (version == 0) return uri + "android/newest";
-        return uri + "android/" + version;
+        if (version == 0) return uri + "android/newest/base";
+        return uri + "android/" + version + "/patch";
     }
 
     private static void deleteRecursive(File fileOrDirectory) {

@@ -13,12 +13,17 @@ import {
   View
 } from 'react-native';
 
+import * as Air from 'react-native-air-lite';
+
 class RNSample extends Component {
+  componentDidMount() {
+    Air.init('http://localhost:32769/airlite/', 1);
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Image source={require('./image/wechat.png')} />
-        xxx
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>

@@ -53,6 +53,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     private final String EventInstalled = "installed";
 
     RNAirPatchManager mPatchManager;
+    RNAirLiteHost mHostHandle;
 
     class CheckUpdateTask extends AsyncTask<Void, Void, String> {
 
@@ -130,13 +131,15 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            // FIXME restart the whole APP
+            restart();
         }
     }
 
-    public RNAirLiteModule(ReactApplicationContext reactContext, RNAirPatchManager patchManager) {
+    public RNAirLiteModule(ReactApplicationContext reactContext, RNAirPatchManager patchManager,
+                           RNAirLiteHost hostHandle) {
         super(reactContext);
         this.mPatchManager = patchManager;
+        this.mHostHandle = hostHandle;
     }
 
     @Override
@@ -156,7 +159,8 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void init(String url, int bundleVersion, boolean storePatchInSD) {
-
+        mPatchManager.setURI(url);
+        mPatchManager.setBundleVersion(bundleVersion);
     }
 
     @ReactMethod
@@ -173,6 +177,9 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     public void installPatch(boolean restartManually) {
         new InstallPatchTask(restartManually).execute();
     }
+
+    @ReactMethod
+    public void restart() { mHostHandle.reboot(); }
 
 //    private String getVersionURL(String url) {
 //        return url + "patch@" + this.version;
