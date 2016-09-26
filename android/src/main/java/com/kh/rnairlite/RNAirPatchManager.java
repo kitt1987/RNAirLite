@@ -9,6 +9,12 @@ import android.util.Log;
 
 import junit.framework.Assert;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.utils.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,6 +26,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * Created by KH on 9/14/16.
@@ -30,6 +40,7 @@ public class RNAirPatchManager {
     private static final String TempPatchPath = "tmp_patch";
     private static final String PatchName = "patch.data";
     private static final String PatchMetaName = "patch.meta";
+    private static final String AssetsName = "assets.tar";
 
     private final int PatchHeaderLength = 64;
     private final int PatchVersionLength = 4;
@@ -46,6 +57,9 @@ public class RNAirPatchManager {
     private @Nullable final Application mApplication;
     private int mVersion = 0;
     private int mRemoteVersion = 0;
+
+    private native ByteBuffer decompress(ByteBuffer buffer);
+    private native ByteBuffer patch(ByteBuffer raw, ByteBuffer patch);
 
     public RNAirPatchManager(Application application) {
         mApplication = application;
@@ -93,21 +107,25 @@ public class RNAirPatchManager {
             return true;
         }
 
-        File dropped = new File(patch.getParentFile(),
-                "dropped_patch_" + System.currentTimeMillis());
-        if (!patch.renameTo(dropped)) {
-            Log.e(RNAirLiteModule.Tag, "Fail to move " + patch.getAbsolutePath() + " to " +
-                    dropped.getAbsolutePath());
-            return false;
-        }
-
-        new DeletePatchTask().execute(dropped.getAbsolutePath());
+        deletePatch(patch);
         mCurrentJSBundle = null;
         calcAvailablePatch();
         return true;
     }
 
-    public String checkUpdate() {
+    private void deletePatch(File patch) {
+        File dropped = new File(patch.getParentFile(),
+                "dropped_patch_" + System.currentTimeMillis());
+        if (!patch.renameTo(dropped)) {
+            Log.e(RNAirLiteModule.Tag, "Fail to move " + patch.getAbsolutePath() + " to " +
+                    dropped.getAbsolutePath());
+            return;
+        }
+
+        new DeletePatchTask().execute(dropped.getAbsolutePath());
+    }
+
+    public String checkForUpdate() {
         if (mUpdateURI == null) {
             return "An URI where patches download from is required.";
         }
@@ -212,14 +230,14 @@ public class RNAirPatchManager {
 
             File patchMeta = new File(patchDir, PatchMetaName);
             metaOut = new FileOutputStream(patchMeta);
-            metaOut.write(meta, 0, PatchHeaderLength);
+            metaOut.write(meta);
             metaOut.flush();
             metaOut.close();
 
             progress.update(PatchHeaderLength, total);
 
             File patchData = new File(patchDir, PatchName);
-            dataOut = new FileOutputStream(patchMeta);
+            dataOut = new FileOutputStream(patchData);
 
             byte data[] = new byte[ChunkSize];
             int count = 0;
@@ -245,9 +263,139 @@ public class RNAirPatchManager {
     }
 
     public String installPatch() {
-        // FIXME validate patch
-        // FIXME if mVersion is 0, then just extract the patch. Else patch to the running bundle.
-        // FIXME move all bundles
+        File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
+        if (!patchDir.isDirectory()) return "No patch found";
+
+        File patchMeta = new File(patchDir, PatchMetaName);
+        if (!patchMeta.exists()) return "No patch meta file found";
+
+        File patchData = new File(patchDir, PatchName);
+        if (!patchData.exists()) return "No patch data file found";
+
+        File assets = new File(patchDir, AssetsName);
+        if (!assets.exists()) return "No assets file found";
+
+        InputStream metaStream, patchStream, curAssetsStream;
+        OutputStream assetsStream;
+
+        try {
+            metaStream = new FileInputStream(patchMeta);
+            byte metaData[] = new byte[PatchHeaderLength];
+            if (metaStream.read(metaData) != metaData.length) {
+                metaStream.close();
+                Log.w(RNAirLiteModule.Tag, "Meta file has been corrupted.");
+                return "Meta file has been corrupted.";
+            }
+
+            if (metaData[0] != PackVersoinSupported) {
+                String error = "Unsupported pack version " + metaData[0];
+                Log.e(RNAirLiteModule.Tag, error);
+                return error;
+            }
+
+            patchStream = new FileInputStream(patchData);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] dataBytes = new byte[(int)patchData.length()];
+            patchStream.read(dataBytes);
+            md.update(dataBytes, 0, dataBytes.length);
+
+            byte[] checksum = md.digest();
+            if (!Arrays.equals(checksum, Arrays.copyOfRange(metaData,
+                    PachVersionLength + PatchVersionLength, ChecksumLength))) {
+                String error = "Fail to verify the checksum";
+                Log.e(RNAirLiteModule.Tag, error);
+                return error;
+            }
+
+            ByteBuffer assetsTar;
+            if (mCurrentJSBundle == null) {
+                assetsTar = this.decompress(ByteBuffer.wrap(dataBytes));
+            } else {
+                ByteBuffer patch = this.decompress(ByteBuffer.wrap(dataBytes));
+                File curAssets = new File(mCurrentJSBundle, AssetsName);
+                if (!curAssets.exists()) return "No Local assets file found";
+
+                curAssetsStream = new FileInputStream(assets);
+                byte[] assetsData = new byte[(int) assets.length()];
+                if (curAssetsStream.read(assetsData) != assetsData.length) {
+                    curAssetsStream.close();
+                    String error = "Local assets file is corrupted.";
+                    Log.e(RNAirLiteModule.Tag, error);
+                    return error;
+                }
+
+                curAssetsStream.close();
+
+                assetsTar = this.patch(ByteBuffer.wrap(assetsData), patch);
+            }
+
+            assetsStream = new FileOutputStream(assets);
+            byte[] assetsTarData = new byte[assetsTar.remaining()];
+            assetsTar.get(assetsTarData);
+            assetsStream.write(assetsTarData);
+            extractTar(assets, patchDir);
+
+            ObjectInputStream metaReader = new ObjectInputStream(metaStream);
+            int version = metaReader.readInt();
+            metaReader.close();
+
+            metaStream.close();
+            patchStream.close();
+
+            applyNewPatch();
+
+            return "" + version;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return e.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return e.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return e.toString();
+        } catch (ArchiveException e) {
+            e.printStackTrace();
+            return e.toString();
+        }
+    }
+
+    private void move(File src, File dst) {
+        if (!src.exists()) return;
+        deletePatch(dst);
+        src.renameTo(dst);
+    }
+
+    private void applyNewPatch() {
+        move(mApplication.getDir(NewestPatchPath, Context.MODE_PRIVATE),
+                mApplication.getDir(StablePatchPath, Context.MODE_PRIVATE));
+        move(mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE),
+                mApplication.getDir(NewestPatchPath, Context.MODE_PRIVATE));
+    }
+
+    private void extractTar(File inputFile, File outputDir) throws IOException, ArchiveException {
+        final InputStream is = new FileInputStream(inputFile);
+        final TarArchiveInputStream debInputStream =
+                (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", is);
+        TarArchiveEntry entry = null;
+        while ((entry = (TarArchiveEntry)debInputStream.getNextEntry()) != null) {
+            final File outputFile = new File(outputDir, entry.getName());
+            if (entry.isDirectory()) {
+                Log.d(RNAirLiteModule.Tag, String.format("Attempting to write output directory %s.", outputFile.getAbsolutePath()));
+                if (!outputFile.exists()) {
+                    Log.d(RNAirLiteModule.Tag, String.format("Attempting to create output directory %s.", outputFile.getAbsolutePath()));
+                    if (!outputFile.mkdirs()) {
+                        throw new IllegalStateException(String.format("Couldn't create directory %s.", outputFile.getAbsolutePath()));
+                    }
+                }
+            } else {
+                Log.d(RNAirLiteModule.Tag, String.format("Creating output file %s.", outputFile.getAbsolutePath()));
+                final OutputStream outputFileStream = new FileOutputStream(outputFile);
+                IOUtils.copy(debInputStream, outputFileStream);
+                outputFileStream.close();
+            }
+        }
+        debInputStream.close();
     }
 
     private void calcAvailablePatch() {

@@ -2,8 +2,9 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.android.tools.build:gradle:2.1.0+'
     }
 }
 
@@ -25,6 +26,11 @@ android {
     }
 }
 
+repositories{
+    mavenCentral()
+}
+
 dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
+    compile "org.apache.commons:commons-compress:+"
 }

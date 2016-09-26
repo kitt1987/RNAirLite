@@ -18,9 +18,11 @@ import java.util.List;
 public class RNAirLitePackage implements ReactPackage {
 
     private final RNAirPatchManager mPatchManager;
+    private final RNAirLiteHost mHostHandle;
 
-    public RNAirLitePackage(RNAirPatchManager patchManager) {
+    public RNAirLitePackage(RNAirPatchManager patchManager, RNAirLiteHost host) {
         mPatchManager = patchManager;
+        mHostHandle = host;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class RNAirLitePackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new RNAirLiteModule(reactContext, mPatchManager));
+        modules.add(new RNAirLiteModule(reactContext, mPatchManager, mHostHandle));
 
         return modules;
     }
