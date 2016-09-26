@@ -159,21 +159,21 @@ public class RNAirPatchManager {
 
             ois = new ObjectInputStream(is);
             mRemoteVersion = ois.readInt();
-            if (ois != null) {
-                ois.close();
-            }
-
-            if (is != null) {
-                is.close();
-            }
-
-            return "";
+            Log.v(RNAirLiteModule.Tag, "The newest version is " + mRemoteVersion);
+            return null;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return e.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (ois != null) ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -185,7 +185,7 @@ public class RNAirPatchManager {
         File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
         deleteRecursive(patchDir);
         InputStream is = null;
-        OutputStream dataOut = null, metaOut = null;
+        OutputStream dataOut = null;
 
         try {
             URL url = new URL(getPatchURI(mUpdateURI, mVersion));
@@ -218,21 +218,20 @@ public class RNAirPatchManager {
                 return error;
             }
 
-            int packVersion = meta[0];
-            if (packVersion != PackVersoinSupported) {
-                String error = "Unsupported pack version " + packVersion;
+            RNAirPatchMeta patchMeta = new RNAirPatchMeta(meta);
+            String result = patchMeta.verify();
+            if (result != null) return result;
+
+            int patchVersion = patchMeta.getVersion();
+            if (patchVersion <= mVersion) {
+                String error = "The patch downloaded is not a new patch which version is "
+                        + patchVersion;
                 Log.e(RNAirLiteModule.Tag, error);
                 return error;
             }
 
-            // FIXME compare version in patch to mVersion
-
-
-            File patchMeta = new File(patchDir, PatchMetaName);
-            metaOut = new FileOutputStream(patchMeta);
-            metaOut.write(meta);
-            metaOut.flush();
-            metaOut.close();
+            result = patchMeta.save(new File(patchDir, PatchMetaName));
+            if (result != null) return result;
 
             progress.update(PatchHeaderLength, total);
 
@@ -250,15 +249,22 @@ public class RNAirPatchManager {
             }
 
             dataOut.flush();
-            dataOut.close();
-            is.close();
-            return "";
+            mRemoteVersion = patchVersion;
+            Log.v(RNAirLiteModule.Tag, "The version of patch downloaded is " + mRemoteVersion);
+            return null;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return e.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (dataOut != null) dataOut.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -266,8 +272,8 @@ public class RNAirPatchManager {
         File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
         if (!patchDir.isDirectory()) return "No patch found";
 
-        File patchMeta = new File(patchDir, PatchMetaName);
-        if (!patchMeta.exists()) return "No patch meta file found";
+        File patchMetaFile = new File(patchDir, PatchMetaName);
+        if (!patchMetaFile.exists()) return "No patch meta file found";
 
         File patchData = new File(patchDir, PatchName);
         if (!patchData.exists()) return "No patch data file found";
@@ -275,37 +281,32 @@ public class RNAirPatchManager {
         File assets = new File(patchDir, AssetsName);
         if (!assets.exists()) return "No assets file found";
 
-        InputStream metaStream, patchStream, curAssetsStream;
-        OutputStream assetsStream;
+        InputStream metaStream = null, patchStream = null, curAssetsStream = null;
+        OutputStream assetsStream = null;
 
         try {
-            metaStream = new FileInputStream(patchMeta);
+            metaStream = new FileInputStream(patchMetaFile);
             byte metaData[] = new byte[PatchHeaderLength];
             if (metaStream.read(metaData) != metaData.length) {
-                metaStream.close();
-                Log.w(RNAirLiteModule.Tag, "Meta file has been corrupted.");
-                return "Meta file has been corrupted.";
-            }
-
-            if (metaData[0] != PackVersoinSupported) {
-                String error = "Unsupported pack version " + metaData[0];
-                Log.e(RNAirLiteModule.Tag, error);
+                String error = "Meta file has been corrupted.";
+                Log.w(RNAirLiteModule.Tag, error);
                 return error;
             }
+
+            RNAirPatchMeta patchMeta = new RNAirPatchMeta(metaData);
+            String result = patchMeta.verify();
+            if (result != null) return result;
 
             patchStream = new FileInputStream(patchData);
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] dataBytes = new byte[(int)patchData.length()];
-            patchStream.read(dataBytes);
-            md.update(dataBytes, 0, dataBytes.length);
-
-            byte[] checksum = md.digest();
-            if (!Arrays.equals(checksum, Arrays.copyOfRange(metaData,
-                    PachVersionLength + PatchVersionLength, ChecksumLength))) {
-                String error = "Fail to verify the checksum";
-                Log.e(RNAirLiteModule.Tag, error);
+            if (patchStream.read(dataBytes) != dataBytes.length) {
+                String error = "Fail to read patch data file.";
+                Log.w(RNAirLiteModule.Tag, error);
                 return error;
             }
+
+            result = patchMeta.verifyPatch(dataBytes);
+            if (result != null) return result;
 
             ByteBuffer assetsTar;
             if (mCurrentJSBundle == null) {
@@ -335,28 +336,37 @@ public class RNAirPatchManager {
             assetsStream.write(assetsTarData);
             extractTar(assets, patchDir);
 
-            ObjectInputStream metaReader = new ObjectInputStream(metaStream);
-            int version = metaReader.readInt();
-            metaReader.close();
-
-            metaStream.close();
-            patchStream.close();
-
+            mRemoteVersion = patchMeta.getVersion();
             applyNewPatch();
 
-            return "" + version;
+            return null;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return e.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return e.toString();
         } catch (ArchiveException e) {
             e.printStackTrace();
             return e.toString();
+        } finally {
+            try {
+                if (metaStream != null) {
+                    metaStream.close();
+                }
+
+                if (patchStream != null) {
+                    patchStream.close();
+                }
+
+                if (curAssetsStream != null) {
+                    curAssetsStream.close();
+                }
+
+                if (assetsStream != null) assetsStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
