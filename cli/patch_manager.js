@@ -13,7 +13,8 @@ const bz2 = require('node-addon-bz2');
 const crypto = require('crypto');
 
 const PATCH_BASE = 'airlite';
-const JSBUNDLE_NAME = 'main.jsbundle';
+const ANDROID_JSBUNDLE_NAME = 'index.android';
+const IOS_JSBUNDLE_NAME = 'index.ios';
 const ASSETS = 'assets';
 const INTERMEDIATES = '.intermediates';
 const RAW_ASSETS = 'assets.tar';
@@ -53,13 +54,22 @@ function loadAllPatches(patchBase) {
 }
 
 function getBundleCommand(platform, patchDir, entry) {
+  var bundleName;
+  if (platform === 'ios') {
+    bundleName = IOS_JSBUNDLE_NAME;
+  } else if (platform === 'android') {
+    bundleName = ANDROID_JSBUNDLE_NAME;
+  } else {
+    throw new Error('Only ios and android are supported. ->' + platform);
+  }
+
   if (platform !== 'ios' && platform !== 'android')
     throw new Error('Only ios and android are supported. ->' + platform);
   if (!patchDir)
     throw new Error('A directory is required to save patch files');
   entry = entry || 'index';
   const cmd = 'react-native bundle --platform %s --entry-file %s.%s.js --dev false --bundle-output "%s/%s" --assets-dest "%s"';
-  return util.format(cmd, platform, entry, platform, patchDir, JSBUNDLE_NAME,
+  return util.format(cmd, platform, entry, platform, patchDir, bundleName,
     patchDir);
 }
 
@@ -76,7 +86,7 @@ function loadPatchVersion(patchPath) {
   if (bytesRead !== HEADER_LENGTH.VERSION)
     throw new Error(patchPath + ' is corrupted.');
 
-  return buf.readUInt32LE();
+  return buf.readUInt32BE();
 }
 
 class PatchManager {
@@ -166,7 +176,7 @@ class PatchManager {
 
     var header = Buffer.alloc(LENGTH_HEADER, 0);
     header.writeUInt8(0x01);
-    header.writeUInt32LE(this.newVersion, HEADER_LENGTH.PACK_VERSION);
+    header.writeUInt32BE(this.newVersion, HEADER_LENGTH.PACK_VERSION);
     var hasher = crypto.createHash('sha256');
     hasher.update(header);
     hasher.update(patchBuf);

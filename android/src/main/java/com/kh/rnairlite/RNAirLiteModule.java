@@ -2,6 +2,7 @@ package com.kh.rnairlite;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -129,6 +130,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         constants.put("EventProgress", EventProgress);
         constants.put("EventError", EventError);
         constants.put("EventDownloaded", EventDownloaded);
+        constants.put("EventInstalled", EventInstalled);
         return constants;
     }
 
@@ -145,7 +147,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void checkUpdate() {
+    public void checkForUpdate() {
         new CheckUpdateTask().execute();
     }
 
@@ -164,7 +166,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
 
     private static void sendEvent(ReactContext reactContext,
                                   String eventName,
-                                  @Nullable WritableMap params) {
+                                  @Nullable Object params) {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
@@ -184,8 +186,7 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     }
 
     private void sendVersion(String event, int version) {
-        WritableMap params = Arguments.createMap();
-        if (version > 0) params.putInt("version", version);
-        sendEvent(this.getReactApplicationContext(), event, params);
+        if (version > 0)
+            sendEvent(this.getReactApplicationContext(), event, version);
     }
 }

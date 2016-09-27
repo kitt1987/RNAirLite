@@ -16,19 +16,32 @@ import {
 import * as Air from 'react-native-air-lite';
 
 class RNSample extends Component {
+  state = {
+    version: 1,
+    newVersion: 1,
+  };
+
   componentDidMount() {
-    Air.init('http://localhost:32769/airlite/', 1);
+    Air.init('http://10.0.2.2:8080/airlite/', this.state.version);
+    Air.addEventListener('error', (err) => {
+      console.log('Error', err);
+    });
+
+    Air.addEventListener('checked', (version) => {
+      console.log(version);
+      this.setState({newVersion: version});
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Image source={require('./image/wechat.png')} />
-        <Text style={styles.welcome}>
-          Welcome to React Native!
+        <Text style={styles.welcome} onPress={() => {Air.checkForUpdate()}}>
+          Check for update!
         </Text>
         <Text style={styles.instructions}>
-          To get started, edit index.android.js
+          Current Version is {this.state.version}. The new version will be {this.state.newVersion}.
         </Text>
         <Text style={styles.instructions}>
           Double tap R on your keyboard to reload,{'\n'}

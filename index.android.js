@@ -9,19 +9,20 @@ var AirLite = NativeModules.RNAirLite;
 
 function allEvents() {
   return [
-    AirLite.EventUpdate,
+    AirLite.EventChecked,
     AirLite.EventError,
     AirLite.EventProgress,
+    AirLite.EventDownloaded,
     AirLite.EventInstalled,
   ];
 }
 
 function init(uri, bundleVersion, storePatchInSD) {
-  AirLite.checkUpdate(uri, bundleVersion, !!storePatchInSD);
+  AirLite.init(uri, bundleVersion, !!storePatchInSD);
 }
 
-function checkUpdate() {
-  AirLite.checkUpdate();
+function checkForUpdate() {
+  AirLite.checkForUpdate();
 }
 
 function downloadPatch() {
@@ -37,15 +38,15 @@ function restart() {
 }
 
 function addEventListener(event, listener) {
-  if (allEvents().indexOf(event) < 0) return;
-  return DeviceEventEmitter.addListener(event, eventHandle.bind(null, event,
-    listener));
+  if (allEvents().indexOf(event) < 0)
+    throw new Error('Event supported are ' + allEvents().join());
+  return DeviceEventEmitter.addListener(event, listener);
 }
 
 module.exports = {
   allEvents,
   init,
-  checkUpdate,
+  checkForUpdate,
   downloadPatch,
   installPatch,
   addEventListener

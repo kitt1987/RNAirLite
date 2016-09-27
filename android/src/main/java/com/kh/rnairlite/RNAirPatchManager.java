@@ -3,6 +3,7 @@ package com.kh.rnairlite;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,6 +16,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -67,6 +69,7 @@ public class RNAirPatchManager {
 
     public void setup() {
         calcAvailablePatch();
+        Log.v(RNAirLiteModule.Tag, "Current JS bundle is " + mCurrentJSBundle);
     }
 
     public void setURI(String uri) {
@@ -131,18 +134,21 @@ public class RNAirPatchManager {
         }
 
         InputStream is = null;
-        ObjectInputStream ois = null;
+        BufferedInputStream ois = null;
+        HttpURLConnection conn = null;
 
         try {
             URL url = new URL(getPatchURI(mUpdateURI, mVersion));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            Log.d(RNAirLiteModule.Tag, ">>" + url);
+            conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(mTimeoutInMs);
             conn.setConnectTimeout(mTimeoutInMs);
             conn.setRequestProperty("Range", "bytes=" + PachVersionLength + "-" +
                     PatchVersionLength);
             conn.connect();
             int responseCode = conn.getResponseCode();
-            if (responseCode != 200) {
+            Log.v(RNAirLiteModule.Tag, "Got a HTTP status " + responseCode);
+            if (responseCode != 206) {
                 String error = "Got a HTTP status " + responseCode +
                         " when patches had been downloaded";
                 Log.d(RNAirLiteModule.Tag, error);
@@ -150,15 +156,15 @@ public class RNAirPatchManager {
             }
 
             is = conn.getInputStream();
-            if (is.available() < PatchVersionLength) {
-                String error = "Server returned only " + is.available() + " bytes";
+            byte[] data = new byte[PatchVersionLength];
+            int bytesRead = is.read(data);
+            if (bytesRead != data.length) {
+                String error = "Server returned only " + bytesRead + " bytes";
                 Log.e(RNAirLiteModule.Tag, error);
-                is.close();
                 return error;
             }
 
-            ois = new ObjectInputStream(is);
-            mRemoteVersion = ois.readInt();
+            mRemoteVersion = ByteBuffer.wrap(data).getInt();
             Log.v(RNAirLiteModule.Tag, "The newest version is " + mRemoteVersion);
             return null;
         } catch (MalformedURLException e) {
@@ -169,6 +175,7 @@ public class RNAirPatchManager {
             return e.toString();
         } finally {
             try {
+                if (conn != null) conn.disconnect();
                 if (is != null) is.close();
                 if (ois != null) ois.close();
             } catch (IOException e) {
@@ -450,8 +457,6 @@ public class RNAirPatchManager {
 
             metaReader = new ObjectInputStream(metaIn);
             mVersion = metaReader.readInt();
-            metaIn.close();
-            metaReader.close();
             Log.i(RNAirLiteModule.Tag, patchPath + " is going to be loaded!");
             return bundleFile.getAbsolutePath();
         } catch (FileNotFoundException e) {
@@ -460,6 +465,13 @@ public class RNAirPatchManager {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        } finally {
+            try {
+                if (metaIn != null) metaIn.close();
+                if (metaReader != null) metaReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

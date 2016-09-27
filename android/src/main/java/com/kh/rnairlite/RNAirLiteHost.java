@@ -38,11 +38,6 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
     }
 
     @Override
-    protected final @Nullable String getBundleAssetName() {
-        return "main.jsbundle";
-    }
-
-    @Override
     protected final @Nullable String getJSBundleFile() {
         if (getUseDeveloperSupport()) return null;
         return mPatchManager.getJSBundleFile();
@@ -80,7 +75,7 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
             builder.addPackage(reactPackage);
         }
 
-        builder.addPackage(new RNAirLitePackage(mPatchManager));
+        builder.addPackage(new RNAirLitePackage(mPatchManager, this));
 
         String jsBundleFile = getJSBundleFile();
         if (jsBundleFile != null) {
