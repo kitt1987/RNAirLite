@@ -30,7 +30,7 @@ function downloadPatch() {
 }
 
 function installPatch(restartManually) {
-  AirLite.installPatch(restartManually);
+  AirLite.installPatch(!!restartManually);
 }
 
 function restart() {
@@ -49,5 +49,6 @@ module.exports = {
   checkForUpdate,
   downloadPatch,
   installPatch,
-  addEventListener
+  addEventListener,
+  restart,
 };

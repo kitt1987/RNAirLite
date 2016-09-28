@@ -191,6 +191,7 @@ public class RNAirPatchManager {
 
         File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
         deleteRecursive(patchDir);
+        patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
         InputStream is = null;
         OutputStream dataOut = null;
 
@@ -252,7 +253,7 @@ public class RNAirPatchManager {
             while ((count = is.read(data)) != -1) {
                 offset += count;
                 progress.update(offset + PatchHeaderLength, total);
-                dataOut.write(data, offset, count);
+                dataOut.write(data, 0, count);
             }
 
             dataOut.flush();
@@ -285,8 +286,11 @@ public class RNAirPatchManager {
         File patchData = new File(patchDir, PatchName);
         if (!patchData.exists()) return "No patch data file found";
 
-        File assets = new File(patchDir, AssetsName);
-        if (!assets.exists()) return "No assets file found";
+        File assets = null;
+        if (mCurrentJSBundle != null) {
+            assets = new File(mCurrentJSBundle, AssetsName);
+            if (!assets.exists()) return "No assets file found";
+        }
 
         InputStream metaStream = null, patchStream = null, curAssetsStream = null;
         OutputStream assetsStream = null;
@@ -305,6 +309,7 @@ public class RNAirPatchManager {
             if (result != null) return result;
 
             patchStream = new FileInputStream(patchData);
+            Log.v(RNAirLiteModule.Tag, "The whole patch size is " + patchData.length());
             byte[] dataBytes = new byte[(int)patchData.length()];
             if (patchStream.read(dataBytes) != dataBytes.length) {
                 String error = "Fail to read patch data file.";
@@ -337,11 +342,12 @@ public class RNAirPatchManager {
                 assetsTar = this.patch(ByteBuffer.wrap(assetsData), patch);
             }
 
-            assetsStream = new FileOutputStream(assets);
+            File newAssets = new File(patchDir, AssetsName);
+            assetsStream = new FileOutputStream(newAssets);
             byte[] assetsTarData = new byte[assetsTar.remaining()];
             assetsTar.get(assetsTarData);
             assetsStream.write(assetsTarData);
-            extractTar(assets, patchDir);
+            extractTar(newAssets, patchDir);
 
             mRemoteVersion = patchMeta.getVersion();
             applyNewPatch();

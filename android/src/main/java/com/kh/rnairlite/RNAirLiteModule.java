@@ -116,6 +116,15 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
         }
     }
 
+    class RebootTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mHostHandle.reboot();
+            return null;
+        }
+    }
+
     public RNAirLiteModule(ReactApplicationContext reactContext, RNAirPatchManager patchManager,
                            RNAirLiteHost hostHandle) {
         super(reactContext);
@@ -162,7 +171,9 @@ public class RNAirLiteModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void restart() { mHostHandle.reboot(); }
+    public void restart() {
+        new RebootTask().execute();
+    }
 
     private static void sendEvent(ReactContext reactContext,
                                   String eventName,

@@ -48,13 +48,31 @@ public class RNAirPatchMeta {
         return null;
     }
 
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
     public String verifyPatch(byte[] patchBytes) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(patchBytes, 0, patchBytes.length);
+            md.update(mBytes, 0, PachVersionLength + PatchVersionLength);
+            byte[] all0s = new byte[PatchHeaderLength - PachVersionLength - PatchVersionLength];
+            Arrays.fill(all0s, (byte) 0);
+            md.update(all0s);
+            md.update(patchBytes);
             byte[] checksum = md.digest();
             byte[] checksumInMeta = new byte[ChecksumLength];
-            mBytesBuf.get(checksumInMeta, PachVersionLength + PatchVersionLength, ChecksumLength);
+            mBytesBuf.position(PachVersionLength + PatchVersionLength);
+            mBytesBuf.get(checksumInMeta);
+            Log.d(RNAirLiteModule.Tag, bytesToHex(checksum));
+            Log.d(RNAirLiteModule.Tag, bytesToHex(checksumInMeta));
             if (!Arrays.equals(checksum, checksumInMeta)) {
                 String error = "Fail to verify the checksum";
                 Log.e(RNAirLiteModule.Tag, error);

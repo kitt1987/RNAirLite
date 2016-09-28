@@ -19,6 +19,7 @@ class RNSample extends Component {
   state = {
     version: 1,
     newVersion: 1,
+    progress: 0.0,
   };
 
   componentDidMount() {
@@ -28,8 +29,18 @@ class RNSample extends Component {
     });
 
     Air.addEventListener('checked', (version) => {
-      console.log(version);
+      console.log('A new version found', version);
       this.setState({newVersion: version});
+    });
+
+    Air.addEventListener('downloaded', (version) => {
+      console.log('The new version is downloaded', version);
+      this.setState({newVersion: version});
+    });
+
+    Air.addEventListener('progress', (event) => {
+      console.log('progress', event);
+      this.setState({progress: event.downloaded / event.total});
     });
   }
 
@@ -43,9 +54,17 @@ class RNSample extends Component {
         <Text style={styles.instructions}>
           Current Version is {this.state.version}. The new version will be {this.state.newVersion}.
         </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
+        <Text style={styles.welcome} onPress={() => {Air.downloadPatch()}}>
+          Download({this.state.progress})!
+        </Text>
+        <Text style={styles.welcome} onPress={() => {Air.installPatch()}}>
+          Install(Automatically)!
+        </Text>
+        <Text style={styles.welcome} onPress={() => {Air.installPatch(true)}}>
+          Install(Manually)!
+        </Text>
+        <Text style={styles.welcome} onPress={() => {Air.restart()}}>
+          Reboot!
         </Text>
       </View>
     );
