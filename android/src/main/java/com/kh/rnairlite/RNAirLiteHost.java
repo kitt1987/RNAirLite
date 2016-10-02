@@ -15,7 +15,8 @@ import com.facebook.react.bridge.UiThreadUtil;
 
 import junit.framework.Assert;
 
-import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.annotation.Nullable;
 
@@ -91,8 +92,20 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                RNAirLiteHost.this.clear();
-                getReactInstanceManager().createReactContextInBackground();
+                try {
+                    Class<?> RIManagerClazz = getReactInstanceManager().getClass();
+                    Method method = RIManagerClazz.getDeclaredMethod("recreateReactContextInBackground");
+                    method.setAccessible(true);
+                    method.invoke(getReactInstanceManager());
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

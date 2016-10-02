@@ -21,10 +21,6 @@ import java.util.Map;
 
 
 public class RNAirLiteModule extends ReactContextBaseJavaModule {
-    static {
-        System.loadLibrary("DiffAndBz2");
-    }
-
     public static final String Tag = "☁RNAirLite☁";
 
     private final String EventChecked = "checked";

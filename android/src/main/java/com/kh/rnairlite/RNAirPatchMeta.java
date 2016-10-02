@@ -59,7 +59,7 @@ public class RNAirPatchMeta {
         return new String(hexChars);
     }
 
-    public String verifyPatch(byte[] patchBytes) {
+    public String verifyPatch(ByteBuffer patchBytes) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(mBytes, 0, PachVersionLength + PatchVersionLength);

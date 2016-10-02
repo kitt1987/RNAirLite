@@ -42,6 +42,11 @@ class RNSample extends Component {
       console.log('progress', event);
       this.setState({progress: event.downloaded / event.total});
     });
+
+    Air.addEventListener('installed', (event) => {
+      console.log('installed', event);
+      this.setState({newVersion: version});
+    });
   }
 
   render() {

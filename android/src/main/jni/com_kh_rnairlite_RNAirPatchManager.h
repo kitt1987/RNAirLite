@@ -8,8 +8,10 @@
 extern "C" {
 #endif
 
-JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_decompress(JNIEnv *, jobject);
-JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_patch(JNIEnv *, jobject, jobject);
+JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_decompress(JNIEnv *, jobject,
+                                                                             jobject);
+JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_patch(JNIEnv *, jobject, jobject,
+                                                                        jobject);
 
 #ifdef __cplusplus
 }

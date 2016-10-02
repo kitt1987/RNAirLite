@@ -7,7 +7,8 @@
 // Created by Kitt Hsu on 5/22/16.
 //
 
-JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_decompress(JNIEnv* env, jobject patch) {
+JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_decompress(JNIEnv* env, jobject,
+                                                                             jobject patch) {
     void* patchData = env->GetDirectBufferAddress(patch);
     jlong patchSize = env->GetDirectBufferCapacity(patch);
 
@@ -56,7 +57,9 @@ JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_decompress(JNI
     return env->NewDirectByteBuffer(output, outputSize);
 }
 
-JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_patch(JNIEnv* env, jobject raw, jobject patch) {
+JNIEXPORT jobject JNICALL Java_com_kh_rnairlite_RNAirPatchManager_patch(JNIEnv* env, jobject,
+                                                                        jobject raw,
+                                                                        jobject patch) {
     void* rawData = env->GetDirectBufferAddress(raw);
     jlong rawSize = env->GetDirectBufferCapacity(raw);
     void* patchData = env->GetDirectBufferAddress(patch);

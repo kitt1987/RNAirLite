@@ -2,8 +2,6 @@ package com.kh.rnairlite;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -37,6 +35,10 @@ import java.util.Arrays;
  * Created by KH on 9/14/16.
  */
 public class RNAirPatchManager {
+    static {
+        System.loadLibrary("DiffAndBz2");
+    }
+
     private static final String StablePatchPath= "stable_patch";
     private static final String NewestPatchPath = "newest_patch";
     private static final String TempPatchPath = "tmp_patch";
@@ -309,9 +311,12 @@ public class RNAirPatchManager {
             if (result != null) return result;
 
             patchStream = new FileInputStream(patchData);
+            ByteBuffer dataBytes = ByteBuffer.allocateDirect((int)patchData.length());
+            ByteBuffer sample = ByteBuffer.allocateDirect((int)patchData.length());
+            Log.d(RNAirLiteModule.Tag, "" + dataBytes.array().length);
             Log.v(RNAirLiteModule.Tag, "The whole patch size is " + patchData.length());
-            byte[] dataBytes = new byte[(int)patchData.length()];
-            if (patchStream.read(dataBytes) != dataBytes.length) {
+            if (patchStream.read(dataBytes.array(), dataBytes.arrayOffset(),
+                    (int)patchData.length()) != patchData.length()) {
                 String error = "Fail to read patch data file.";
                 Log.w(RNAirLiteModule.Tag, error);
                 return error;
@@ -322,9 +327,10 @@ public class RNAirPatchManager {
 
             ByteBuffer assetsTar;
             if (mCurrentJSBundle == null) {
-                assetsTar = this.decompress(ByteBuffer.wrap(dataBytes));
+                Log.v(RNAirLiteModule.Tag, "The whole assets will be extracting...");
+                assetsTar = this.decompress(dataBytes);
             } else {
-                ByteBuffer patch = this.decompress(ByteBuffer.wrap(dataBytes));
+                ByteBuffer patch = this.decompress(dataBytes);
                 File curAssets = new File(mCurrentJSBundle, AssetsName);
                 if (!curAssets.exists()) return "No Local assets file found";
 
@@ -402,6 +408,7 @@ public class RNAirPatchManager {
                 (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", is);
         TarArchiveEntry entry = null;
         while ((entry = (TarArchiveEntry)debInputStream.getNextEntry()) != null) {
+            Log.d(RNAirLiteModule.Tag, String.format("Extracting %s.", entry.getName()));
             final File outputFile = new File(outputDir, entry.getName());
             if (entry.isDirectory()) {
                 Log.d(RNAirLiteModule.Tag, String.format("Attempting to write output directory %s.", outputFile.getAbsolutePath()));
@@ -481,9 +488,9 @@ public class RNAirPatchManager {
         }
     }
 
-    private static String getPatchURI(String uri, int version) {
+    private String getPatchURI(String uri, int version) {
         if (!uri.endsWith("/")) uri += "/";
-        if (version == 0) return uri + "android/newest/base";
+        if (mCurrentJSBundle == null) return uri + "android/newest/base";
         return uri + "android/" + version + "/patch";
     }
 
