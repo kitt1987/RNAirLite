@@ -211,7 +211,8 @@ class PatchManager {
 
         tr.verbose(stdout);
         var packer = tar.Pack({
-            noProprietary: true
+            noProprietary: true,
+            fromBase: true,
           })
           .on('error', err => {
             tr.error('An error occurred:', err);
