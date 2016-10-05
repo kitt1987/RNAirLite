@@ -16,11 +16,11 @@ import java.util.Arrays;
  */
 public class RNAirPatchMeta {
 
-    private final int PackVersoinSupported = 1;
-    private final int PatchHeaderLength = 64;
-    private final int PachVersionLength = 1;
-    private final int PatchVersionLength = 4;
-    private final int ChecksumLength = 32;
+    private static final int PackVersoinSupported = 1;
+    private static final int PatchHeaderLength = 64;
+    private static final int PachVersionLength = 1;
+    private static final int PatchVersionLength = 4;
+    private static final int ChecksumLength = 32;
 
     private ByteBuffer mBytesBuf;
     private final byte[] mBytes;
@@ -48,17 +48,6 @@ public class RNAirPatchMeta {
         return null;
     }
 
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
     public String verifyPatch(ByteBuffer patchBytes) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -71,8 +60,6 @@ public class RNAirPatchMeta {
             byte[] checksumInMeta = new byte[ChecksumLength];
             mBytesBuf.position(PachVersionLength + PatchVersionLength);
             mBytesBuf.get(checksumInMeta);
-            Log.d(RNAirLiteModule.Tag, bytesToHex(checksum));
-            Log.d(RNAirLiteModule.Tag, bytesToHex(checksumInMeta));
             if (!Arrays.equals(checksum, checksumInMeta)) {
                 String error = "Fail to verify the checksum";
                 Log.e(RNAirLiteModule.Tag, error);
@@ -112,5 +99,17 @@ public class RNAirPatchMeta {
                 }
             }
         }
+    }
+
+    public static byte[] createVersionBuffer() {
+        return new byte[PatchVersionLength];
+    }
+
+    public static byte[] createMetaBuffer() {
+        return new byte[PatchHeaderLength];
+    }
+
+    public static String getVersionByteRange() {
+        return PachVersionLength + "-" + PatchVersionLength;
     }
 }

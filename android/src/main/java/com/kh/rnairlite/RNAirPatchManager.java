@@ -1,8 +1,6 @@
 package com.kh.rnairlite;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -21,15 +19,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 /**
  * Created by KH on 9/14/16.
@@ -39,39 +33,29 @@ public class RNAirPatchManager {
         System.loadLibrary("DiffAndBz2");
     }
 
-    private static final String StablePatchPath= "stable_patch";
-    private static final String NewestPatchPath = "newest_patch";
-    private static final String TempPatchPath = "tmp_patch";
-    private static final String PatchName = "patch.data";
-    private static final String PatchMetaName = "patch.meta";
-    private static final String AssetsName = "assets.tar";
-
-    private final int PatchHeaderLength = 64;
-    private final int PatchVersionLength = 4;
-    private final int PachVersionLength = 1;
-    private final int ChecksumLength = 32;
-    private final int PackVersoinSupported = 1;
-
     private static final int ChunkSize = 10240;
 
     private boolean mSaveInSD = false;
     private String mUpdateURI;
     private int mTimeoutInMs = 10000;
-    private @Nullable String mCurrentJSBundle;
-    private @Nullable final Application mApplication;
+    private @Nullable RNAirFolder.PatchScheme mCurrentJSBundle;
     private int mVersion = 0;
     private int mRemoteVersion = 0;
+    private RNAirFolder mFolderManager;
 
     private native ByteBuffer decompress(ByteBuffer buffer);
     private native ByteBuffer patch(ByteBuffer raw, ByteBuffer patch);
 
-    public RNAirPatchManager(Application application) {
-        mApplication = application;
+    public RNAirPatchManager(Application application, String jsMainModuleName) {
+        mFolderManager = new RNAirFolder(application, jsMainModuleName);
     }
 
     public void setup() {
+        mFolderManager.init();
         calcAvailablePatch();
-        Log.v(RNAirLiteModule.Tag, "Current JS bundle is " + mCurrentJSBundle);
+        if (mCurrentJSBundle != null) {
+            Log.v(RNAirLiteModule.Tag, "Current JS bundle is " + mCurrentJSBundle.getDataFolder());
+        }
     }
 
     public void setURI(String uri) {
@@ -93,17 +77,16 @@ public class RNAirPatchManager {
     public int getVersion() { return mVersion; }
 
     public String getJSBundleFile() {
-        return mCurrentJSBundle;
+        if (mCurrentJSBundle == null) return null;
+        return mCurrentJSBundle.getBundleFile().getAbsolutePath();
     }
 
     public boolean hasAnyPatches() { return mCurrentJSBundle != null; }
 
-    public String getBundleAssetName() { return "main.jsbundle"; }
-
     public boolean rollback() {
         Assert.assertNotNull(mCurrentJSBundle);
 
-        File bundle = new File(mCurrentJSBundle);
+        File bundle = mCurrentJSBundle.getBundleFile();
         File patch = bundle.getParentFile();
         if (!patch.exists()) {
             Log.w(RNAirLiteModule.Tag, patch.getAbsolutePath() + " doesn't exist!");
@@ -112,22 +95,10 @@ public class RNAirPatchManager {
             return true;
         }
 
-        deletePatch(patch);
+        RNAirFS.deletePatch(patch);
         mCurrentJSBundle = null;
         calcAvailablePatch();
         return true;
-    }
-
-    private void deletePatch(File patch) {
-        File dropped = new File(patch.getParentFile(),
-                "dropped_patch_" + System.currentTimeMillis());
-        if (!patch.renameTo(dropped)) {
-            Log.e(RNAirLiteModule.Tag, "Fail to move " + patch.getAbsolutePath() + " to " +
-                    dropped.getAbsolutePath());
-            return;
-        }
-
-        new DeletePatchTask().execute(dropped.getAbsolutePath());
     }
 
     public String checkForUpdate() {
@@ -145,8 +116,7 @@ public class RNAirPatchManager {
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(mTimeoutInMs);
             conn.setConnectTimeout(mTimeoutInMs);
-            conn.setRequestProperty("Range", "bytes=" + PachVersionLength + "-" +
-                    PatchVersionLength);
+            conn.setRequestProperty("Range", "bytes=" + RNAirPatchMeta.getVersionByteRange());
             conn.connect();
             int responseCode = conn.getResponseCode();
             Log.v(RNAirLiteModule.Tag, "Got a HTTP status " + responseCode);
@@ -158,7 +128,7 @@ public class RNAirPatchManager {
             }
 
             is = conn.getInputStream();
-            byte[] data = new byte[PatchVersionLength];
+            byte[] data = RNAirPatchMeta.createVersionBuffer();
             int bytesRead = is.read(data);
             if (bytesRead != data.length) {
                 String error = "Server returned only " + bytesRead + " bytes";
@@ -191,9 +161,8 @@ public class RNAirPatchManager {
             return "An URI where patches download from is required.";
         }
 
-        File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
-        deleteRecursive(patchDir);
-        patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
+        mFolderManager.createTempWritingFolder();
+        RNAirFolder.PatchScheme ps = mFolderManager.getTempPatchSchema();
         InputStream is = null;
         OutputStream dataOut = null;
 
@@ -213,15 +182,8 @@ public class RNAirPatchManager {
 
             is = conn.getInputStream();
             int total = conn.getContentLength();
-            if (total < PatchHeaderLength) {
-                is.close();
-                String error = "The patch which length is " + total + " is corrupted";
-                Log.e(RNAirLiteModule.Tag, error);
-                return error;
-            }
-
-            byte meta[] = new byte[PatchHeaderLength];
-            if (is.read(meta) != PatchHeaderLength) {
+            byte meta[] = RNAirPatchMeta.createMetaBuffer();
+            if (is.read(meta) != meta.length) {
                 is.close();
                 String error = "The patch header which length is " + total + " is corrupted";
                 Log.e(RNAirLiteModule.Tag, error);
@@ -240,13 +202,12 @@ public class RNAirPatchManager {
                 return error;
             }
 
-            result = patchMeta.save(new File(patchDir, PatchMetaName));
+            result = patchMeta.save(ps.getMetaFile());
             if (result != null) return result;
 
-            progress.update(PatchHeaderLength, total);
+            progress.update(meta.length, total);
 
-            File patchData = new File(patchDir, PatchName);
-            dataOut = new FileOutputStream(patchData);
+            dataOut = new FileOutputStream(ps.getPatchFile());
 
             byte data[] = new byte[ChunkSize];
             int count = 0;
@@ -254,7 +215,7 @@ public class RNAirPatchManager {
 
             while ((count = is.read(data)) != -1) {
                 offset += count;
-                progress.update(offset + PatchHeaderLength, total);
+                progress.update(offset + meta.length, total);
                 dataOut.write(data, 0, count);
             }
 
@@ -279,19 +240,20 @@ public class RNAirPatchManager {
     }
 
     public String installPatch() {
-        File patchDir = mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE);
+        RNAirFolder.PatchScheme ps = mFolderManager.getTempPatchSchema();
+        File patchDir = ps.getDataFolder();
         if (!patchDir.isDirectory()) return "No patch found";
 
-        File patchMetaFile = new File(patchDir, PatchMetaName);
+        File patchMetaFile = ps.getMetaFile();
         if (!patchMetaFile.exists()) return "No patch meta file found";
 
-        File patchData = new File(patchDir, PatchName);
+        File patchData = ps.getPatchFile();
         if (!patchData.exists()) return "No patch data file found";
 
         File assets = null;
         if (mCurrentJSBundle != null) {
-            assets = new File(mCurrentJSBundle, AssetsName);
-            if (!assets.exists()) return "No assets file found";
+            assets = mCurrentJSBundle.getAssetsFile();
+            if (!assets.exists()) return "No assets file found at " + assets.getAbsolutePath();
         }
 
         InputStream metaStream = null, patchStream = null, curAssetsStream = null;
@@ -299,7 +261,7 @@ public class RNAirPatchManager {
 
         try {
             metaStream = new FileInputStream(patchMetaFile);
-            byte metaData[] = new byte[PatchHeaderLength];
+            byte metaData[] = RNAirPatchMeta.createMetaBuffer();
             if (metaStream.read(metaData) != metaData.length) {
                 String error = "Meta file has been corrupted.";
                 Log.w(RNAirLiteModule.Tag, error);
@@ -312,9 +274,6 @@ public class RNAirPatchManager {
 
             patchStream = new FileInputStream(patchData);
             ByteBuffer dataBytes = ByteBuffer.allocateDirect((int)patchData.length());
-            ByteBuffer sample = ByteBuffer.allocateDirect((int)patchData.length());
-            Log.d(RNAirLiteModule.Tag, "" + dataBytes.array().length);
-            Log.v(RNAirLiteModule.Tag, "The whole patch size is " + patchData.length());
             if (patchStream.read(dataBytes.array(), dataBytes.arrayOffset(),
                     (int)patchData.length()) != patchData.length()) {
                 String error = "Fail to read patch data file.";
@@ -331,9 +290,6 @@ public class RNAirPatchManager {
                 assetsTar = this.decompress(dataBytes);
             } else {
                 ByteBuffer patch = this.decompress(dataBytes);
-                File curAssets = new File(mCurrentJSBundle, AssetsName);
-                if (!curAssets.exists()) return "No Local assets file found";
-
                 curAssetsStream = new FileInputStream(assets);
                 byte[] assetsData = new byte[(int) assets.length()];
                 if (curAssetsStream.read(assetsData) != assetsData.length) {
@@ -348,15 +304,14 @@ public class RNAirPatchManager {
                 assetsTar = this.patch(ByteBuffer.wrap(assetsData), patch);
             }
 
-            File newAssets = new File(patchDir, AssetsName);
+            File newAssets = ps.getAssetsFile();
             assetsStream = new FileOutputStream(newAssets);
             byte[] assetsTarData = new byte[assetsTar.remaining()];
             assetsTar.get(assetsTarData);
             assetsStream.write(assetsTarData);
             extractTar(newAssets, patchDir);
-
-            mRemoteVersion = patchMeta.getVersion();
             applyNewPatch();
+            mRemoteVersion = patchMeta.getVersion();
 
             return null;
         } catch (FileNotFoundException e) {
@@ -389,17 +344,12 @@ public class RNAirPatchManager {
         }
     }
 
-    private void move(File src, File dst) {
-        if (!src.exists()) return;
-        deletePatch(dst);
-        src.renameTo(dst);
-    }
-
     private void applyNewPatch() {
-        move(mApplication.getDir(NewestPatchPath, Context.MODE_PRIVATE),
-                mApplication.getDir(StablePatchPath, Context.MODE_PRIVATE));
-        move(mApplication.getDir(TempPatchPath, Context.MODE_PRIVATE),
-                mApplication.getDir(NewestPatchPath, Context.MODE_PRIVATE));
+        RNAirFolder.PatchScheme newest = mFolderManager.getNewestPatchSchema();
+        File newestPatchFolder = newest.getPatchFolder();
+        RNAirFS.move(newestPatchFolder, mFolderManager.getStablePatchFolder());
+        RNAirFS.move(mFolderManager.getTempPatchFolder(), newestPatchFolder);
+        mCurrentJSBundle = newest;
     }
 
     private void extractTar(File inputFile, File outputDir) throws IOException, ArchiveException {
@@ -430,15 +380,15 @@ public class RNAirPatchManager {
 
     private void calcAvailablePatch() {
         Assert.assertNull(mCurrentJSBundle);
-        mCurrentJSBundle = getPatchAvailable(NewestPatchPath);
+        mCurrentJSBundle = getPatchAvailable(mFolderManager.getNewestPatchSchema());
         if (mCurrentJSBundle != null) return;
 
-        mCurrentJSBundle = getPatchAvailable(StablePatchPath);
+        mCurrentJSBundle = getPatchAvailable(mFolderManager.getStablePatchSchema());
     }
 
-    private @Nullable String getPatchAvailable(String patchPath) {
+    private @Nullable RNAirFolder.PatchScheme getPatchAvailable(RNAirFolder.PatchScheme patchScheme) {
         // FIXME JS codes could decide to save patches in inner or external storage.
-        File stablePatchDir = mApplication.getDir(patchPath, Context.MODE_PRIVATE);
+        File stablePatchDir = patchScheme.getDataFolder();
         if (!stablePatchDir.exists() || !stablePatchDir.isDirectory()) {
             Log.d(RNAirLiteModule.Tag, "No patch found in " + stablePatchDir.getAbsolutePath());
             return null;
@@ -446,32 +396,34 @@ public class RNAirPatchManager {
 
         Log.d(RNAirLiteModule.Tag, "The stable patch is stored in " + stablePatchDir.getAbsolutePath());
 
-        File bundleFile = new File(stablePatchDir, getBundleAssetName());
+        File bundleFile = patchScheme.getBundleFile();
         if (!bundleFile.exists()) {
-            Log.w(RNAirLiteModule.Tag, patchPath + " do not found.");
+            Log.w(RNAirLiteModule.Tag, bundleFile.getAbsolutePath() + " does not found.");
             return null;
         }
 
-        File metaFile = new File(stablePatchDir, PatchMetaName);
+        File metaFile = patchScheme.getMetaFile();
         if (!metaFile.exists()) {
-            Log.w(RNAirLiteModule.Tag, "Meta file does not found.");
+            Log.w(RNAirLiteModule.Tag, metaFile.getAbsolutePath() + " does not found.");
             return null;
         }
 
         InputStream metaIn = null;
-        ObjectInputStream metaReader = null;
         try {
             metaIn = new FileInputStream(metaFile);
-            if (metaIn.skip(PachVersionLength) != PachVersionLength) {
-                metaIn.close();
-                Log.w(RNAirLiteModule.Tag, "Meta file has been corrupted.");
+            byte metaData[] = RNAirPatchMeta.createMetaBuffer();
+            if (metaIn.read(metaData) != metaData.length) {
+                String error = "Meta file has been corrupted.";
+                Log.w(RNAirLiteModule.Tag, error);
                 return null;
             }
 
-            metaReader = new ObjectInputStream(metaIn);
-            mVersion = metaReader.readInt();
-            Log.i(RNAirLiteModule.Tag, patchPath + " is going to be loaded!");
-            return bundleFile.getAbsolutePath();
+            RNAirPatchMeta patchMeta = new RNAirPatchMeta(metaData);
+            String result = patchMeta.verify();
+            if (result != null) return null;
+
+            mVersion = patchMeta.getVersion();
+            return patchScheme;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -481,7 +433,6 @@ public class RNAirPatchManager {
         } finally {
             try {
                 if (metaIn != null) metaIn.close();
-                if (metaReader != null) metaReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -492,25 +443,5 @@ public class RNAirPatchManager {
         if (!uri.endsWith("/")) uri += "/";
         if (mCurrentJSBundle == null) return uri + "android/newest/base";
         return uri + "android/" + version + "/patch";
-    }
-
-    private static void deleteRecursive(File fileOrDirectory) {
-
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
-
-    class DeletePatchTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            deleteRecursive(new File(params[0]));
-            return null;
-        }
     }
 }

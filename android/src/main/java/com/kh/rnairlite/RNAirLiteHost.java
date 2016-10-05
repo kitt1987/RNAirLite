@@ -35,7 +35,7 @@ public abstract class RNAirLiteHost extends ReactNativeHost {
         super(application);
         Assert.assertNotNull(application);
         mApplication = application;
-        mPatchManager = new RNAirPatchManager(application);
+        mPatchManager = new RNAirPatchManager(application, getJSMainModuleName());
     }
 
     @Override

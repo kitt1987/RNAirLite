@@ -15,9 +15,11 @@ import {
 
 import * as Air from 'react-native-air-lite';
 
+const VERSION = 0;
+
 class RNSample extends Component {
   state = {
-    version: 1,
+    version: VERSION,
     newVersion: 1,
     progress: 0.0,
   };
